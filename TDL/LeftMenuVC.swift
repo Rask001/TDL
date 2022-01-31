@@ -78,9 +78,6 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	@objc func allertSure() {
 	let areYouSureAllert = UIAlertController(title: "Delete all folders", message: nil, preferredStyle: .actionSheet)
 		let yesAction = UIAlertAction(title: "Delete", style: .destructive) { [self] action in
-	
-//	@objc func deleteAll(_ sender: UIBarButtonItem) {
-		print("delete")
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		
