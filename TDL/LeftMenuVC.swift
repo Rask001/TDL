@@ -22,10 +22,7 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		menuOpen = true
 		print("true")
 		let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-		//let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Folder> = Folder.fetchRequest() //используем классовый метод
-//		let sortDescriotor = NSSortDescriptor(key: "name", ascending: true)
-//		fetchRequest.sortDescriptors = [sortDescriotor]
 		do{
 			folders = try context.fetch(fetchRequest)
 		} catch let error as NSError {
@@ -48,9 +45,9 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		navigationBarSetup()
 		setupButton()
 		notification()
-		longPress()
+		//longPress()
     interactivePopGestureRecognizer()
-		tapObservers()
+		//tapObservers()
 	}
 	
 	
@@ -75,9 +72,7 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	
-	@objc func allertSure() {
-	let areYouSureAllert = UIAlertController(title: "Delete all folders", message: nil, preferredStyle: .actionSheet)
-		let yesAction = UIAlertAction(title: "Delete", style: .destructive) { [self] action in
+	func deleteAllFolders(){
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		
@@ -93,20 +88,24 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		} catch let error as NSError {
 			print(error.localizedDescription)
 		}
-		tableView.reloadData()
 	}
+	
+	
+	@objc func allertSure() {
+		let areYouSureAllert = UIAlertController(title: "Delete all folders", message: nil, preferredStyle: .actionSheet)
+		let yesAction = UIAlertAction(title: "Delete", style: .destructive) { [self] action in
+			deleteAllFolders()
+			tableView.reloadData()
+		}
 		let noAction = UIAlertAction(title: "Cancel", style: .cancel) { action in
 		}
-			areYouSureAllert.addAction(yesAction)
-			areYouSureAllert.addAction(noAction)
-			
-			present(areYouSureAllert, animated: true)
-		}
-	
-	@objc func editFolders(_ sender: UIBarButtonItem){
-		print("Hello")
+		areYouSureAllert.addAction(yesAction)
+		areYouSureAllert.addAction(noAction)
+		
+		present(areYouSureAllert, animated: true)
 	}
 	
+
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: indentifire, for: indexPath)
@@ -134,12 +133,12 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	
 	// MARK: - SETUP
 	private func setupOther() {
-		view.backgroundColor = .tertiarySystemBackground
+		view.backgroundColor = .secondarySystemBackground
 	}
 	
 	func navigationBarSetup() {
 		let leftButton = UIBarButtonItem(image: UIImage(systemName: "trash"), style: .plain, target: self, action: #selector(allertSure))
-		let rightButton = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(editFolders))
+		let rightButton = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(edit))
 		self.navigationItem.leftBarButtonItem = leftButton
 		self.navigationItem.rightBarButtonItem = rightButton
 		self.navigationItem.title = "Folders"
@@ -148,11 +147,12 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	
 	
 	func setupTable() {
-		self.tableView = UITableView(frame: view.bounds, style: .insetGrouped)
+		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: 314, height: 650), style: .insetGrouped)
 		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: indentifire)
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
-		self.tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+		self.tableView.backgroundColor = .secondarySystemBackground
+	  self.tableView.isScrollEnabled = false //отключение скроллинга
 		view.addSubview(tableView)
 	}
 	
@@ -202,8 +202,6 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		let editButton2 = UIContextualAction(style: .normal, title: "hey") { action, view, completion in
 			print("hey")
 		}
-		
-		
 		editButton2.backgroundColor = UIColor.green
 //		let label = UILabel()
 //				label.text = "trtr"
@@ -216,46 +214,68 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	
 	
 	
-	
-	
-	
-	
-	
-	
+
 	
 	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
 		return .delete
 	}
 	
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-		if editingStyle == .delete {
-			folders.remove(at: indexPath.row)
-			tableView.deleteRows(at: [indexPath], with: .left)
+		let appDelegate = UIApplication.shared.delegate as! AppDelegate
+		let context = appDelegate.persistentContainer.viewContext
+		let index = indexPath.row
+		
+		context.delete(folders[index] as NSManagedObject)
+		folders.remove(at: index)
+		
+		let _ : NSError! = nil
+		do {
+			try context.save()
+			self.tableView.reloadData()
+		} catch {
+			print("error : \(error)")
 		}
 	}
 	
 	
+	func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+		return true
+	}
+	
+	func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+		let item = folders[sourceIndexPath.row] //подняли наш айтем
+		folders.remove(at: sourceIndexPath.row) //удалили с того места где он был
+		folders.insert(item, at: destinationIndexPath.row) // положили на новое место
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	@objc func tappedMedium() {
 		let generator = UIImpactFeedbackGenerator(style: .medium)
-								generator.impactOccurred()
+		generator.impactOccurred()
 	}
 	@objc func tappedHeavy() {
 		let generator = UIImpactFeedbackGenerator(style: .heavy)
-								generator.impactOccurred()
+		generator.impactOccurred()
 	}
 	@objc func tappedSoft() {
 		let generator = UIImpactFeedbackGenerator(style: .soft)
-								generator.impactOccurred()
+		generator.impactOccurred()
 	}
 	@objc func tappedRigid() {
 		let generator = UIImpactFeedbackGenerator(style: .rigid)
-								generator.impactOccurred()
+		generator.impactOccurred()
 	}
 	
 	func tapObservers() {
-						let singleTap = UITapGestureRecognizer(target: self, action: #selector(endEditing))
-						singleTap.numberOfTapsRequired = 1
-						self.view.addGestureRecognizer(singleTap)
+		let singleTap = UITapGestureRecognizer(target: self, action: #selector(endEditing))
+		singleTap.numberOfTapsRequired = 1
+		self.view.addGestureRecognizer(singleTap)
 	}
 	
 	@objc func endEditing(){
@@ -266,15 +286,18 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	
-	@objc func edit(Recognizer: UILongPressGestureRecognizer) {
-		if Recognizer.state == .began {
-		tappedHeavy()
+	@objc func edit(Recognizer: UIBarButtonItem) {
+		
 		tableView.isEditing = !tableView.isEditing
-	} else if
-		Recognizer.state == .ended{
+		tappedSoft()
+//		if Recognizer.state == .began {
+//		tappedHeavy()
+//		tableView.isEditing = !tableView.isEditing
+//	} else if
+//		Recognizer.state == .ended{
 		//tappedRigid()
 	}
-	}
+	
 	
 	
 	
