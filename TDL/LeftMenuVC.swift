@@ -8,6 +8,7 @@ import UIKit
 import CoreData
 class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+	
 	var folders: [Folder] = []
 	
   
@@ -29,6 +30,7 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 			print(error.localizedDescription)
 		}
 	}
+	
 	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
@@ -97,6 +99,7 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 			deleteAllFolders()
 			tableView.reloadData()
 		}
+		
 		let noAction = UIAlertAction(title: "Cancel", style: .cancel) { action in
 		}
 		areYouSureAllert.addAction(yesAction)
@@ -106,7 +109,6 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	}
 	
 
-	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: indentifire, for: indexPath)
 		let folder = folders[indexPath.row]
@@ -133,16 +135,22 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	
 	// MARK: - SETUP
 	private func setupOther() {
-		view.backgroundColor = .secondarySystemBackground
+		view.backgroundColor = UIColor(named: "WhiteBlack")
 	}
 	
+	
 	func navigationBarSetup() {
-		let leftButton = UIBarButtonItem(image: UIImage(systemName: "trash"), style: .plain, target: self, action: #selector(allertSure))
-		let rightButton = UIBarButtonItem(image: UIImage(systemName: "gear"), style: .plain, target: self, action: #selector(edit))
+		let leftButton = UIBarButtonItem(image: UIImage(systemName: "trash"),
+																		 style: .plain,
+																		 target: self,
+																		 action: #selector(allertSure))
+		let rightButton = UIBarButtonItem(image: UIImage(systemName: "gear"),
+																			style: .plain,
+																			target: self,
+																			action: #selector(edit))
 		self.navigationItem.leftBarButtonItem = leftButton
 		self.navigationItem.rightBarButtonItem = rightButton
 		self.navigationItem.title = "Folders"
-		
 	}
 	
 	
@@ -151,8 +159,9 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: indentifire)
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
-		self.tableView.backgroundColor = .secondarySystemBackground
+		self.tableView.backgroundColor = UIColor(named: "WhiteBlack")
 	  self.tableView.isScrollEnabled = false //отключение скроллинга
+		self.tableView.separatorStyle = .none
 		view.addSubview(tableView)
 	}
 	
@@ -242,17 +251,12 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		return true
 	}
 	
+	
 	func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
 		let item = folders[sourceIndexPath.row] //подняли наш айтем
 		folders.remove(at: sourceIndexPath.row) //удалили с того места где он был
 		folders.insert(item, at: destinationIndexPath.row) // положили на новое место
 	}
-	
-	
-	
-	
-	
-	
 	
 	
 	@objc func tappedMedium() {
@@ -272,11 +276,6 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		generator.impactOccurred()
 	}
 	
-	func tapObservers() {
-		let singleTap = UITapGestureRecognizer(target: self, action: #selector(endEditing))
-		singleTap.numberOfTapsRequired = 1
-		self.view.addGestureRecognizer(singleTap)
-	}
 	
 	@objc func endEditing(){
 		if tableView.isEditing == true {
@@ -286,8 +285,14 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	
+	func tapObservers() {
+		let singleTap = UITapGestureRecognizer(target: self, action: #selector(endEditing))
+		singleTap.numberOfTapsRequired = 1
+		self.view.addGestureRecognizer(singleTap)
+	}
+	
+	
 	@objc func edit(Recognizer: UIBarButtonItem) {
-		
 		tableView.isEditing = !tableView.isEditing
 		tappedSoft()
 //		if Recognizer.state == .began {
@@ -299,16 +304,10 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	
-	
-	
-	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)//Затухание выбора ячейки
 	}
 	
-	
-	
-
 	@objc func goToNewListViewController() {
 		self.present(vc, animated: true, completion: nil)
 		//экшен для кнопки презентующий модально NewListViewController
