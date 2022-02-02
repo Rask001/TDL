@@ -21,7 +21,6 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		menuOpen = true
-		print("true")
 		let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Folder> = Folder.fetchRequest() //используем классовый метод
 		do{
@@ -35,7 +34,6 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		menuOpen = false
-		print("false")
 	}
 	
 	
@@ -155,7 +153,7 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	
 	
 	func setupTable() {
-		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: 314, height: 650), style: .insetGrouped)
+		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: 314, height: 650), style: .plain)
 		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: indentifire)
 		self.tableView.delegate = self
 		self.tableView.dataSource = self

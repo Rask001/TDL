@@ -48,6 +48,15 @@ class NewListViewController: UIViewController, UITextFieldDelegate {
 		self.view.addSubview(self.textField)
 	}
 	
+	
+	func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+		self.textField.resignFirstResponder()
+		continueFunc()
+		return true
+		//ввод/return на клавиатуре
+	}
+	
+	
 	//navigationBarSetup
 	func navigationBarSetup() {
 		self.navigationBar.frame = CGRect(x: 0, y: 0, width: Int(self.view.bounds.size.width), height: 44)

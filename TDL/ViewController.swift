@@ -9,10 +9,12 @@ import UIKit
 
 var menuOpen = false
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+	var tasks: [Tasks] = []
+	
 	var leftMenuNC: SideMenuNavigationController?
-	
-	
+	var tableView = UITableView()
+	let indentifire = "Cell"
 	
 	//MARK: - viewDidLoad
 	override func viewDidLoad() {
@@ -24,6 +26,22 @@ class ViewController: UIViewController {
 		swipesObservers()
 		tapObservers()
 	}
+	
+	func setupTable() {
+		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 650), style: .plain)
+		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: indentifire)
+		self.tableView.delegate = self
+		self.tableView.dataSource = self
+		self.tableView.backgroundColor = UIColor(named: "WhiteBlack")
+		self.tableView.isScrollEnabled = false //отключение скроллинга
+		self.tableView.separatorStyle = .none
+		view.addSubview(tableView)
+	}
+	
+	
+	
+	
+	
 	
 	
 	//MARK: - FUNC
@@ -122,5 +140,13 @@ navigationItemImage = "line.horizontal.3.decrease"
 																		image: UIImage(systemName: "checkmark.seal"),
 																		tag: 1)
 		self.tabBarItem = tabBarItem
+	}
+	
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		<#code#>
+	}
+	
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		<#code#>
 	}
 }
