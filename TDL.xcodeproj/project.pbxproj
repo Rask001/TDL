@@ -11,6 +11,7 @@
 		3A06F5262798968A002F5C6D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A06F5252798968A002F5C6D /* Assets.xcassets */; };
 		3A06F5292798968A002F5C6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3A06F5272798968A002F5C6D /* LaunchScreen.storyboard */; };
 		3A25478127AB365C009ECFEA /* NewListVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A25478027AB365C009ECFEA /* NewListVC.swift */; };
+		3A25478327AC5DDE009ECFEA /* newListEditing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A25478227AC5DDE009ECFEA /* newListEditing.swift */; };
 		3A7B9C3427A15FEA0041284A /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 3A7B9C3227A15FEA0041284A /* Model.xcdatamodeld */; };
 		3A7B9C3627A167AB0041284A /* SecondVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7B9C3527A167AB0041284A /* SecondVC.swift */; };
 		3AD190B9279BF1D60041F3F6 /* LeftMenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD190B8279BF1D50041F3F6 /* LeftMenuVC.swift */; };
@@ -27,6 +28,7 @@
 		3A06F5282798968A002F5C6D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3A06F52A2798968A002F5C6D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3A25478027AB365C009ECFEA /* NewListVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewListVC.swift; sourceTree = "<group>"; };
+		3A25478227AC5DDE009ECFEA /* newListEditing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = newListEditing.swift; sourceTree = "<group>"; };
 		3A7B9C3327A15FEA0041284A /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		3A7B9C3527A167AB0041284A /* SecondVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondVC.swift; sourceTree = "<group>"; };
 		3AD190B8279BF1D50041F3F6 /* LeftMenuVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftMenuVC.swift; sourceTree = "<group>"; };
@@ -74,6 +76,7 @@
 				3AD190BA279D72650041F3F6 /* ViewController.swift */,
 				3AD190B8279BF1D50041F3F6 /* LeftMenuVC.swift */,
 				3A25478027AB365C009ECFEA /* NewListVC.swift */,
+				3A25478227AC5DDE009ECFEA /* newListEditing.swift */,
 				3AD190C2279DF33A0041F3F6 /* NewListViewController.swift */,
 				3A7B9C3527A167AB0041284A /* SecondVC.swift */,
 				3A06F5252798968A002F5C6D /* Assets.xcassets */,
@@ -217,6 +220,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3AD190BB279D72650041F3F6 /* ViewController.swift in Sources */,
+				3A25478327AC5DDE009ECFEA /* newListEditing.swift in Sources */,
 				3AD190C3279DF33A0041F3F6 /* NewListViewController.swift in Sources */,
 				3A7B9C3427A15FEA0041284A /* Model.xcdatamodeld in Sources */,
 				3A25478127AB365C009ECFEA /* NewListVC.swift in Sources */,
