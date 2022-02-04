@@ -21,6 +21,7 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		self.textField.becomeFirstResponder()
+		textFieldSetup()
 	}
 	
 	
@@ -28,7 +29,6 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		otherSetup()
-		textFieldSetup()
 		navigationBarSetup()
 	}
 	
@@ -42,7 +42,7 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 		self.textField.frame = CGRect(x: self.view.bounds.size.width/2 - 150, y: 80, width: 300, height: 31)
 		//self.textField.placeholder = "craete new folder"
 		self.textField.borderStyle = UITextField.BorderStyle.roundedRect
-		self.textField.backgroundColor = UIColor(named: "WhiteBlack")
+		self.textField.backgroundColor = UIColor(named: "BWTrue")
 		self.textField.text = oldCellName
 		self.view.addSubview(self.textField)
 	}

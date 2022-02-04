@@ -135,16 +135,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	@objc func goToNewListEditing(){
 			self.present(newListEditing, animated: true, completion: nil)
-			//экшен для кнопки презентующий модально NewList
-		}
+print ("\(oldCellName)")		}
 	
-	@objc func editTask(notificationEdit: NSNotification) {
+	@objc func editTask(notificationEdit: NSNotification){
 		self.editAndSaveTask(withTitle: newCellName)
 		print("ko")
 		tableView.reloadData()
 	}
 	
-	@objc func addNewTask(notification: NSNotification) {
+	@objc func addNewTask(notification: NSNotification){
 		self.saveTask(withTitle: textTaskFromTF)
 		tableView.reloadData()
 	}

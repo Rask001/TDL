@@ -41,7 +41,7 @@ class NewListVC: UIViewController, UITextFieldDelegate {
 		self.textField.frame = CGRect(x: self.view.bounds.size.width/2 - 150, y: 80, width: 300, height: 31)
 		self.textField.placeholder = "craete new folder"
 		self.textField.borderStyle = UITextField.BorderStyle.roundedRect
-		self.textField.backgroundColor = UIColor(named: "WhiteBlack")
+		self.textField.backgroundColor = UIColor(named: "BWTrue")
 		self.view.addSubview(self.textField)
 	}
 	
