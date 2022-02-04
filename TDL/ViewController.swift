@@ -25,6 +25,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	//MARK: - viewDidLoad
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		print("ViewDidLoad")
 		setupSideMenu()
   	setupNavigationItems()
 		setupOther()
@@ -33,11 +34,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		setupTable()
 		setupButton()
 		notification()
+		notificationEdit()
 	}
 	
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
+		print("viewWillAppear")
 		let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Tasks> = Tasks.fetchRequest() //используем классовый метод
 		do{
@@ -121,11 +124,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	func notification(){
 		NotificationCenter.default.addObserver(self, selector: #selector(addNewTask), name: Notification.Name("Task"), object: .none)
+		print("AddNewTask")
 		//переносит введеный текст из newListVC в viewContrioller
 	}
 	func notificationEdit(){
 		NotificationCenter.default.addObserver(self, selector: #selector(editTask), name: Notification.Name("Edit"), object: .none)
-	
+
 	}
 	
 	@objc func goToNewList(){
@@ -137,14 +141,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 			self.present(newListEditing, animated: true, completion: nil)
 print ("\(oldCellName)")		}
 	
+	
+	
+	
+	
 	@objc func editTask(notificationEdit: NSNotification){
 		self.editAndSaveTask(withTitle: newCellName)
-		print("ko")
 		tableView.reloadData()
 	}
 	
+	
+	
+	
+	
+	
 	@objc func addNewTask(notification: NSNotification){
 		self.saveTask(withTitle: textTaskFromTF)
+		print("ko")
 		tableView.reloadData()
 	}
 	
@@ -184,7 +197,6 @@ print ("\(oldCellName)")		}
 		let cell = self.tableView.cellForRow(at: indexPath)
 		let text: String = cell!.textLabel!.text!
     oldCellName = text
-		//goToNewList()
 		goToNewListEditing()
 }
 	

@@ -17,11 +17,18 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 	let leftButton = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelFunc))
 	let rightButton = UIBarButtonItem(title: "continue", style: .plain, target: self, action: #selector(continueFunc))
 	
+	
+	
+	
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		textFieldSetup()//load cell name in tedxt field
+	}
 	//MARK: - viewDidAppear
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		self.textField.becomeFirstResponder()
-		textFieldSetup()
+		self.textField.becomeFirstResponder()//открытие клавиатуры
 	}
 	
 	
