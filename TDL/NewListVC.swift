@@ -10,7 +10,7 @@ var textTaskFromTF = ""
 
 class NewListVC: UIViewController, UITextFieldDelegate {
 	
-	
+	//MARK: - Properties
 	let textField = UITextField()
 	let navigationBar = UINavigationBar()
 	let leftButton = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelFunc))

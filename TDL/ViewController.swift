@@ -11,8 +11,6 @@ import CoreData
 var menuOpen = false
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
-//let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 	
 	
 	//MARK: - Properties
@@ -196,6 +194,35 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		leftMenuNC?.menuWidth = menuWidth
 	}
 	
+	//NavigationItems
+	private func setupNavigationItems(){
+		self.title = "Your tasks"
+		
+		self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.horizontal.3.decrease"),
+																														style: .plain,
+																														target: self,
+																														action: #selector(didTapMenu))
+	}
+	
+	
+//	func interactivePopGestureRecognizer(){ //распознователь жестов
+//	navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+//	}
+	
+	
+	//setupOther
+	private func setupOther(){
+		self.view.backgroundColor = UIColor(named: "BGColor")
+		var tabBarItem = UITabBarItem()
+		tabBarItem = UITabBarItem(title: nil,
+															image: UIImage(systemName: "checkmark.seal"),
+															tag: 1)
+		self.tabBarItem = tabBarItem
+	}
+	
+	
+	//MARK: - TABLE VIEW
+	
 	
 	func setupTable() {
 		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 650), style: .insetGrouped)
@@ -259,13 +286,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		return tasksModels.count
 	}
 
+	
 	func numberOfSections(in tableView: UITableView) -> Int {
 		return 1
 	}
 	
+	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 		return 50.0
 	}
+	
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: indentifire, for: indexPath)
@@ -274,37 +304,4 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		cell.backgroundColor = UIColor(named: "WhiteBlack")
 		return cell
 	}
-	
-	
-	//NavigationItems
-	private func setupNavigationItems(){
-		self.title = "Your tasks"
-
-		self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.horizontal.3.decrease"),
-																														style: .plain,
-																														target: self,
-																														action: #selector(didTapMenu))
-	}
-
-	
-//	func interactivePopGestureRecognizer(){ //распознователь жестов
-//	navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-//	}
-	
-	
-	//setupOther
-	private func setupOther(){
-		self.view.backgroundColor = UIColor(named: "BGColor")
-		var tabBarItem = UITabBarItem()
-		tabBarItem = UITabBarItem(title: nil,
-																		image: UIImage(systemName: "checkmark.seal"),
-																		tag: 1)
-		self.tabBarItem = tabBarItem
-	}
-	
-	
-	
-	
-	
-
 }
