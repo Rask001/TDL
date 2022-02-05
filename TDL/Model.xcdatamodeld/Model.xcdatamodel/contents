@@ -4,13 +4,13 @@
         <attribute name="name" attributeType="String" spotlightIndexingEnabled="YES"/>
         <relationship name="tasks" optional="YES" toMany="YES" deletionRule="Deny" destinationEntity="Tasks" inverseName="folder" inverseEntity="Tasks"/>
     </entity>
-    <entity name="Tasks" representedClassName=".Tasks" syncable="YES" codeGenerationType="class">
-        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    <entity name="Tasks" representedClassName=".Tasks" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="text" attributeType="String"/>
         <relationship name="folder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Folder" inverseName="tasks" inverseEntity="Folder"/>
     </entity>
     <elements>
         <element name="Folder" positionX="-666.88134765625" positionY="77.219482421875" width="128" height="58"/>
-        <element name="Tasks" positionX="-454.2620849609375" positionY="-243.3578491210938" width="128" height="73"/>
+        <element name="Tasks" positionX="-454.2620849609375" positionY="-243.3578491210938" width="128" height="74"/>
     </elements>
 </model>

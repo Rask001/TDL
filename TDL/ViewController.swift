@@ -11,9 +11,10 @@ import CoreData
 var menuOpen = false
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
+//let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 	
-	
-	var tasks: [Tasks] = []
+	private var tasksModels: [Tasks] = []
 	let newList = NewListVC()
 	let newListEditing = NewListEditing()
 	var leftMenuNC: SideMenuNavigationController?
@@ -21,6 +22,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	let indentifire = "Cell"
 	let buttonNewTask = UIButton(type: .system)
 	var navigationItemImage: String = ""
+	var indexP = 0
 	
 	//MARK: - viewDidLoad
 	override func viewDidLoad() {
@@ -30,21 +32,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
   	setupNavigationItems()
 		setupOther()
 		swipesObservers()
-		//tapObservers()
+		
 		setupTable()
 		setupButton()
 		notification()
 		notificationEdit()
+		
+		//tapObservers()
 	}
 	
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		print("viewWillAppear")
 		let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Tasks> = Tasks.fetchRequest() //используем классовый метод
 		do{
-			tasks = try context.fetch(fetchRequest)
+			tasksModels = try context.fetch(fetchRequest)
 		} catch let error as NSError {
 			print(error.localizedDescription)
 		}
@@ -61,8 +64,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		let context = appDelegate.persistentContainer.viewContext
 		let index = indexPath.row
 		
-		context.delete(tasks[index] as NSManagedObject)
-		tasks.remove(at: index)
+		context.delete(tasksModels[index] as NSManagedObject)
+		tasksModels.remove(at: index)
 		
 		let _ : NSError! = nil
 		do {
@@ -74,38 +77,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	}
 	
 	
-	func saveTask(withTitle title: String) {
-		let appDelegate = UIApplication.shared.delegate as! AppDelegate
-		let context = appDelegate.persistentContainer.viewContext
-		guard let entity = NSEntityDescription.entity(forEntityName: "Tasks", in: context) else {return}
-		let tasksObject = Tasks(entity: entity, insertInto: context)
-		tasksObject.text = title
-		do{
-			try context.save()
-			tasks.append(tasksObject)
-		} catch let error as NSError {
-			print(error.localizedDescription)
-		}
-	}
 	
 	
 	
 	
 	
 	
-	func editAndSaveTask(withTitle title: String) {
-		let appDelegate = UIApplication.shared.delegate as! AppDelegate
-		let context = appDelegate.persistentContainer.viewContext
-		guard let entity = NSEntityDescription.entity(forEntityName: "Tasks", in: context) else {return}
-		let tasksObject = Tasks(entity: entity, insertInto: context)
-		tasksObject.text = newCellName
-		do{
-			try context.save()
-			tasks.append(tasksObject)
-		} catch let error as NSError {
-			print(error.localizedDescription)
-		}
-	}
+	
+
 	
 	
 	
@@ -122,15 +101,56 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	}
 	
 	
+	
 	func notification(){
 		NotificationCenter.default.addObserver(self, selector: #selector(addNewTask), name: Notification.Name("Task"), object: .none)
-		print("AddNewTask")
 		//переносит введеный текст из newListVC в viewContrioller
 	}
+	
+	@objc func addNewTask(notification: NSNotification){
+		self.saveTask(withTitle: textTaskFromTF)
+		tableView.reloadData()
+	}
+	
+	func saveTask(withTitle title: String) {
+		let appDelegate = UIApplication.shared.delegate as! AppDelegate
+		let context = appDelegate.persistentContainer.viewContext
+		guard let entity = NSEntityDescription.entity(forEntityName: "Tasks", in: context) else {return}
+		let tasksObject = Tasks(entity: entity, insertInto: context)
+		tasksObject.text = title
+		do{
+			try context.save()
+			tasksModels.append(tasksObject)
+		} catch let error as NSError {
+			print(error.localizedDescription)
+		}
+	}
+	
+	
+	
 	func notificationEdit(){
 		NotificationCenter.default.addObserver(self, selector: #selector(editTask), name: Notification.Name("Edit"), object: .none)
-
 	}
+	
+	@objc func editTask(notificationEdit: NSNotification){
+		self.editAndSaveTask(withTitle: newCellName)
+		tableView.reloadData()
+	}
+	
+	  func editAndSaveTask(withTitle title: String) {
+		let appDelegate = UIApplication.shared.delegate as! AppDelegate
+		let context = appDelegate.persistentContainer.viewContext
+		let tasksObject = tasksModels[indexP]
+		let title = newCellName
+		tasksObject.text = title
+		do {
+			try context.save()
+		} catch let error as NSError {
+			print(error.localizedDescription)
+		}
+	}
+	
+	
 	
 	@objc func goToNewList(){
 			self.present(newList, animated: true, completion: nil)
@@ -139,27 +159,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	@objc func goToNewListEditing(){
 			self.present(newListEditing, animated: true, completion: nil)
-print ("\(oldCellName)")		}
-	
-	
-	
-	
-	
-	@objc func editTask(notificationEdit: NSNotification){
-		self.editAndSaveTask(withTitle: newCellName)
-		tableView.reloadData()
-	}
+		}
 	
 	
 	
 	
 	
 	
-	@objc func addNewTask(notification: NSNotification){
-		self.saveTask(withTitle: textTaskFromTF)
-		print("ko")
-		tableView.reloadData()
-	}
+
 	
 	func swipesObservers() {
 		let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes))
@@ -195,9 +202,12 @@ print ("\(oldCellName)")		}
 		tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
 		
 		let cell = self.tableView.cellForRow(at: indexPath)
-		let text: String = cell!.textLabel!.text!
-    oldCellName = text
+		let text = cell!.textLabel!.text!
+		indexP = indexPath.row
+		print(tasksModels.count)
+		oldCellName = text
 		goToNewListEditing()
+		print(indexP)
 }
 	
 	
@@ -302,7 +312,7 @@ print ("\(oldCellName)")		}
 	
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return tasks.count
+		return tasksModels.count
 	}
 	
 
@@ -318,9 +328,72 @@ print ("\(oldCellName)")		}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: indentifire, for: indexPath)
-		let task = tasks[indexPath.row]
+		let task = tasksModels[indexPath.row]
 		cell.textLabel?.text = task.text
 		cell.backgroundColor = UIColor(named: "WhiteBlack")
 		return cell
 	}
+	
+	
+	
+	//Core Data
+//
+	func getAllItems(){
+		let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+		do {
+			tasksModels = try context.fetch(Tasks.fetchRequest())
+			DispatchQueue.main.async {
+
+				self.tableView.reloadData()
+			}
+		}
+		catch {
+			//error
+		}
+	}
+//
+//	func createItem(text: String){
+//		let newItem = Tasks(context: context)
+//		newItem.text = text
+//		newItem.createdAt = Date()
+//		do {
+//			try context.save()
+//		}
+//			catch {
+//			//error
+//		}
+//	}
+//
+//	func deleteItem(item: Tasks){
+//		context.delete(item)
+//		do {
+//			try context.save()
+//		}
+//			catch {
+//			//error
+//		}
+//
+//	}
+//
+	func updateItem(item: Tasks, newText: String){
+		let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+		item.text = newText
+		do {
+			try context.save()
+			getAllItems()
+		}
+			catch {
+			//error
+		}
+	}
+
+
+
+
+
 }
+
+
+
+
+
