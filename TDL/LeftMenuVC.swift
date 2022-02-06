@@ -8,16 +8,14 @@ import UIKit
 import CoreData
 class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-	
+	//MARK: - Properties
 	var folders: [Folder] = []
-	
-  
 	let vc = NewListViewController()
 	var tableView = UITableView()
 	let indentifire = "Cell"
 	let buttonNewList = UIButton(type: .system)
 	
-	
+	// MARK: - viewWillAppear
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		menuOpen = true
@@ -30,7 +28,7 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		}
 	}
 	
-	
+  //MARK: - viewWillDisappear
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		menuOpen = false
@@ -121,15 +119,6 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	
-	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return 50.0
-	}
-	
-	
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return folders.count
-	}
-	
 	
 	// MARK: - SETUP
 	private func setupOther() {
@@ -151,18 +140,7 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		self.navigationItem.title = "Folders"
 	}
 	
-	
-	func setupTable() {
-		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: 314, height: 650), style: .plain)
-		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: indentifire)
-		self.tableView.delegate = self
-		self.tableView.dataSource = self
-		self.tableView.backgroundColor = UIColor(named: "WhiteBlack")
-	  self.tableView.isScrollEnabled = false //отключение скроллинга
-		self.tableView.separatorStyle = .none
-		view.addSubview(tableView)
-	}
-	
+
 	
 	func setupButton(){
 		self.buttonNewList.frame = CGRect(x: 82, y: 700, width: 150, height: 50)
@@ -175,7 +153,56 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		view.addSubview(self.buttonNewList)
 	}
 	
-  
+	
+	@objc func tappedMedium() {
+		let generator = UIImpactFeedbackGenerator(style: .medium)
+		generator.impactOccurred()
+	}
+	@objc func tappedHeavy() {
+		let generator = UIImpactFeedbackGenerator(style: .heavy)
+		generator.impactOccurred()
+	}
+	@objc func tappedSoft() {
+		let generator = UIImpactFeedbackGenerator(style: .soft)
+		generator.impactOccurred()
+	}
+	@objc func tappedRigid() {
+		let generator = UIImpactFeedbackGenerator(style: .rigid)
+		generator.impactOccurred()
+	}
+	
+	
+	@objc func endEditing(){
+		if tableView.isEditing == true {
+			tableView.isEditing = false
+			tappedSoft()
+		}
+	}
+	
+	
+	func interactivePopGestureRecognizer(){ //распознователь жестов
+	navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+	}
+	
+	
+	func tapObservers() {
+		let singleTap = UITapGestureRecognizer(target: self, action: #selector(endEditing))
+		singleTap.numberOfTapsRequired = 1
+		self.view.addGestureRecognizer(singleTap)
+	}
+	
+	
+	@objc func edit(Recognizer: UIBarButtonItem) {
+		tableView.isEditing = !tableView.isEditing
+		tappedSoft()
+//		if Recognizer.state == .began {
+//		tappedHeavy()
+//		tableView.isEditing = !tableView.isEditing
+//	} else if
+//		Recognizer.state == .ended{
+		//tappedRigid()
+	}
+	
 	func notification(){
 		NotificationCenter.default.addObserver(self, selector: #selector(addNewFolders), name: Notification.Name("Folder"), object: .none)
 		//переносит введеный текст из newListViewController в LeftMenu
@@ -189,13 +216,27 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	
-	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		return true
+	@objc func goToNewListViewController() {
+		self.present(vc, animated: true, completion: nil)
+		//экшен для кнопки презентующий модально NewListViewController
+	}
+
+
+//MARK: - TABLE VIEW
+	func setupTable() {
+		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: 314, height: 650), style: .plain)
+		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: indentifire)
+		self.tableView.delegate = self
+		self.tableView.dataSource = self
+		self.tableView.backgroundColor = UIColor(named: "WhiteBlack")
+		self.tableView.isScrollEnabled = false //отключение скроллинга
+		self.tableView.separatorStyle = .none
+		view.addSubview(tableView)
 	}
 	
 	
-	func interactivePopGestureRecognizer(){ //распознователь жестов
-	navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+		return true
 	}
 	
 	
@@ -203,29 +244,34 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		let editButton = UIContextualAction(style: .normal, title: "") { action, view, completion in
 			print("YO!")
 		}
-		
 		editButton.backgroundColor = UIColor.darkGray
 		editButton.image = UIImage.init(systemName: "pencil")
 		let editButton2 = UIContextualAction(style: .normal, title: "hey") { action, view, completion in
 			print("hey")
 		}
 		editButton2.backgroundColor = UIColor.green
-//		let label = UILabel()
-//				label.text = "trtr"
-//				label.font = UIFont(name: "America Typewriter", size: 15)
-//      	label.sizeToFit(editButton2)
-//		editButton2.image = UIImage(view: label)
-				return UISwipeActionsConfiguration(actions: [editButton, editButton2])
+		//		let label = UILabel()
+		//				label.text = "trtr"
+		//				label.font = UIFont(name: "America Typewriter", size: 15)
+		//      	label.sizeToFit(editButton2)
+		//		editButton2.image = UIImage(view: label)
+		return UISwipeActionsConfiguration(actions: [editButton, editButton2])
+	}
+	
+	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		return 50.0
 	}
 	
 	
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return folders.count
+	}
 	
-	
-
 	
 	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
 		return .delete
 	}
+	
 	
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -257,57 +303,10 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 	}
 	
 	
-	@objc func tappedMedium() {
-		let generator = UIImpactFeedbackGenerator(style: .medium)
-		generator.impactOccurred()
-	}
-	@objc func tappedHeavy() {
-		let generator = UIImpactFeedbackGenerator(style: .heavy)
-		generator.impactOccurred()
-	}
-	@objc func tappedSoft() {
-		let generator = UIImpactFeedbackGenerator(style: .soft)
-		generator.impactOccurred()
-	}
-	@objc func tappedRigid() {
-		let generator = UIImpactFeedbackGenerator(style: .rigid)
-		generator.impactOccurred()
-	}
-	
-	
-	@objc func endEditing(){
-		if tableView.isEditing == true {
-			tableView.isEditing = false
-			tappedSoft()
-		}
-	}
-	
-	
-	func tapObservers() {
-		let singleTap = UITapGestureRecognizer(target: self, action: #selector(endEditing))
-		singleTap.numberOfTapsRequired = 1
-		self.view.addGestureRecognizer(singleTap)
-	}
-	
-	
-	@objc func edit(Recognizer: UIBarButtonItem) {
-		tableView.isEditing = !tableView.isEditing
-		tappedSoft()
-//		if Recognizer.state == .began {
-//		tappedHeavy()
-//		tableView.isEditing = !tableView.isEditing
-//	} else if
-//		Recognizer.state == .ended{
-		//tappedRigid()
-	}
-	
-	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		tableView.deselectRow(at: indexPath, animated: true)//Затухание выбора ячейки
 	}
 	
-	@objc func goToNewListViewController() {
-		self.present(vc, animated: true, completion: nil)
-		//экшен для кнопки презентующий модально NewListViewController
-	}
+	
+	
 }

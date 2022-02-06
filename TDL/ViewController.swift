@@ -202,7 +202,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 																														style: .plain,
 																														target: self,
 																														action: #selector(didTapMenu))
+		let rightButton = UIBarButtonItem(image: UIImage(systemName: "gear"),
+																			style: .plain,
+																			target: self,
+																			action: #selector(edit))
+		self.navigationItem.rightBarButtonItem = rightButton
 	}
+	
 	
 	
 //	func interactivePopGestureRecognizer(){ //распознователь жестов
@@ -232,6 +238,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		self.tableView.backgroundColor = UIColor(named: "BGColor")
 		self.tableView.isScrollEnabled = true // скроллинг
 		self.tableView.separatorStyle = .singleLine
+		self.tableView.isScrollEnabled = false
+		self.tableView.separatorStyle = .none
 		view.addSubview(tableView)
 	}
 	
@@ -247,6 +255,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	
 	func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+		
 		let editButton = UIContextualAction(style: .normal, title: "") { action, view, completion in }
 		editButton.backgroundColor = UIColor.darkGray
 		editButton.image = UIImage.init(systemName: "pencil")
@@ -254,10 +263,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		let editButton2 = UIContextualAction(style: .normal, title: "") { action, view, completion in }
 		editButton2.backgroundColor = UIColor.green
 		editButton2.image = UIImage.init(systemName: "star")
-
 				return UISwipeActionsConfiguration(actions: [editButton, editButton2])
 	}
-	
+
 	
 	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
 		return .delete
@@ -304,4 +312,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		cell.backgroundColor = UIColor(named: "WhiteBlack")
 		return cell
 	}
+	
+	
+	@objc func edit(Recognizer: UIBarButtonItem) {
+		tableView.isEditing = !tableView.isEditing
+		tappedSoft()
+//		if Recognizer.state == .began {
+//		tappedHeavy()
+//		tableView.isEditing = !tableView.isEditing
+//	} else if
+//		Recognizer.state == .ended{
+		//tappedRigid()
+	}
+	
+	func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+		let item = tasksModels[sourceIndexPath.row] //подняли наш айтем
+		tasksModels.remove(at: sourceIndexPath.row) //удалили с того места где он был
+		tasksModels.insert(item, at: destinationIndexPath.row) // положили на новое место
+	}
+	
+	
 }

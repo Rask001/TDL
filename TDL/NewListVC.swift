@@ -8,13 +8,15 @@
 import UIKit
 var textTaskFromTF = ""
 
-class NewListVC: UIViewController, UITextFieldDelegate {
+class NewListVC: UIViewController, UITextFieldDelegate{
+
 	
 	//MARK: - Properties
 	let textField = UITextField()
 	let navigationBar = UINavigationBar()
 	let leftButton = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelFunc))
 	let rightButton = UIBarButtonItem(title: "continue", style: .plain, target: self, action: #selector(continueFunc))
+	let dataPicker = UIDatePicker()
 	
 	//MARK: - viewDidAppear
 	override func viewDidAppear(_ animated: Bool) {

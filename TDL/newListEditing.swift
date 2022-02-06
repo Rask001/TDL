@@ -19,8 +19,6 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 	let rightButton = UIBarButtonItem(title: "continue", style: .plain, target: self, action: #selector(continueFunc))
 	
 	
-	
-	
 	//MARK: - viewWillAppear
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
@@ -79,7 +77,7 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 		self.view.addSubview(navigationBar)
 	}
 	
-	//otherSetup
+	
 	func otherSetup(){
 		self.view.backgroundColor = .secondarySystemBackground
 	}
