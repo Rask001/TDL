@@ -219,10 +219,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	//setupOther
 	private func setupOther(){
 		self.view.backgroundColor = UIColor(named: "BGColor")
-		var tabBarItem = UITabBarItem()
-		tabBarItem = UITabBarItem(title: nil,
-															image: UIImage(systemName: "checkmark.seal"),
-															tag: 1)
+		let tabBarItem = UITabBarItem(title: nil,
+															image: UIImage(systemName: "checkmark.seal")?.withAlignmentRectInsets(.init(top: 10, left: 0, bottom: 0, right: 0)),
+															tag: 0)
 		self.tabBarItem = tabBarItem
 	}
 	
@@ -236,10 +235,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
 		self.tableView.backgroundColor = UIColor(named: "BGColor")
-		self.tableView.isScrollEnabled = true // скроллинг
+		//self.tableView.isScrollEnabled = true // скроллинг
+		self.tableView.bounces = false //если много ячеек прокрутка on. по дефолту off
 		self.tableView.separatorStyle = .singleLine
-		self.tableView.isScrollEnabled = false
 		self.tableView.separatorStyle = .none
+		self.tableView.rowHeight = 60
 		view.addSubview(tableView)
 	}
 	
@@ -256,16 +256,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		
-		let editButton = UIContextualAction(style: .normal, title: "") { action, view, completion in }
+		let editButton = UIContextualAction(style: .normal, title: "") { action, view, completion in
+			let cell = self.tableView.cellForRow(at: indexPath)
+			let text = cell!.textLabel!.text!
+			self.indexP = indexPath.row
+			oldCellName = text
+			self.goToNewListEditing()
+		}
 		editButton.backgroundColor = UIColor.darkGray
 		editButton.image = UIImage.init(systemName: "pencil")
 		
-		let editButton2 = UIContextualAction(style: .normal, title: "") { action, view, completion in }
-		editButton2.backgroundColor = UIColor.green
+		let editButton2 = UIContextualAction(style: .normal, title: "") { action, view, completion in
+		}
 		editButton2.image = UIImage.init(systemName: "star")
-				return UISwipeActionsConfiguration(actions: [editButton, editButton2])
+	  editButton2.backgroundColor = UIColor.green
+	
+	
+     
+		return UISwipeActionsConfiguration(actions: [editButton, editButton2])
 	}
-
 	
 	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
 		return .delete
@@ -310,6 +319,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		let task = tasksModels[indexPath.row]
 		cell.textLabel?.text = task.text
 		cell.backgroundColor = UIColor(named: "WhiteBlack")
+		//cell.accessoryType = .checkmark
 		return cell
 	}
 	

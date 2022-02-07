@@ -229,7 +229,8 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
 		self.tableView.backgroundColor = UIColor(named: "WhiteBlack")
-		self.tableView.isScrollEnabled = false //отключение скроллинга
+		//self.tableView.isScrollEnabled = false //отключение скроллинга
+		self.tableView.bounces = false //прокрутка вкл когда много ячеек
 		self.tableView.separatorStyle = .none
 		view.addSubview(tableView)
 	}

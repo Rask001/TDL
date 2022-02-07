@@ -38,9 +38,8 @@ class SecondVC: UIViewController {
 	
 	func otherSetup() {
 		self.view.backgroundColor = .secondarySystemBackground
-		var tabBarItem = UITabBarItem()
-		tabBarItem = UITabBarItem(title: nil,
-															image: UIImage(systemName: "xmark.seal"),
+		let tabBarItem = UITabBarItem(title: nil,
+															image: UIImage(systemName: "xmark.seal")?.withAlignmentRectInsets(.init(top: 10, left: 0, bottom: 0, right: 0)),
 															tag: 1)
 		self.tabBarItem = tabBarItem
 	}
