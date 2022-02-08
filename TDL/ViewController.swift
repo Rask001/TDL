@@ -7,10 +7,11 @@
 import SideMenu
 import UIKit
 import CoreData
+import FSCalendar
 
 var menuOpen = false
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController {
 	
 	
 	//MARK: - Properties
@@ -22,21 +23,30 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	let indentifire = "Cell"
 	let buttonNewTask = UIButton(type: .system)
 	var indexP = 0
-	//new feature
+	let calendar = FSCalendar ()
+	var calendarHeightConstraint : NSLayoutConstraint!
 	
+	let showHeightButton = UIButton()
+
+	
+	
+
 	
 	//MARK: - viewDidLoad
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupSideMenu()
   	setupNavigationItems()
+		calendarSetup()
+		showHeightButtonSetup()
 		setupOther()
 		swipesObservers()
+		swipeCalendar()
 		setupTable()
 		setupButton()
 		notification()
 		notificationEdit()
-		
+		setConstraits()
 		//tapObservers()
 	}
 	
@@ -127,11 +137,37 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		self.view.addGestureRecognizer(swipeLeft)
 	}
 	
+	func swipeCalendar() {
+		let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipesCalendar))
+		swipeUp.direction = .up
+		self.calendar.addGestureRecognizer(swipeUp)
+		
+		let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipesCalendar))
+		swipeDown.direction = .down
+		self.calendar.addGestureRecognizer(swipeDown)
+	}
+	
+	@objc func handleSwipesCalendar(gesture: UISwipeGestureRecognizer) {
+		switch gesture.direction {
+		case .up:
+			if calendar.scope == .month {
+				showHeightButtonTapped()
+			}
+		case .down:
+			if calendar.scope == .week{
+			showHeightButtonTapped()
+			}
+		default:
+			break
+		}
+	}
+	
 	func tapObservers() {
 		let singleTap = UITapGestureRecognizer(target: self, action: #selector(singleTapAction))
 		singleTap.numberOfTapsRequired = 1
 		self.view.addGestureRecognizer(singleTap)
 	}
+	
 	
 	@objc func tappedSoft() {
 		let generator = UIImpactFeedbackGenerator(style: .soft)
@@ -160,12 +196,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		}
 	}
 	
-
+	func calendarSetup(){
+		view.addSubview(calendar)
+		self.calendar.translatesAutoresizingMaskIntoConstraints = false
+		self.calendar.dataSource = self
+		self.calendar.delegate = self
+		self.calendar.scope = .week
+	}
 	
-	
-	
-	
-	
+	func showHeightButtonSetup() {
+		view.addSubview(showHeightButton)
+		self.showHeightButton.addTarget(self, action: #selector(showHeightButtonTapped), for: .touchUpInside)
+		self.showHeightButton.setTitle("Open calendar", for: .normal)
+		self.showHeightButton.setTitleColor(UIColor.gray, for: .normal)
+		self.showHeightButton.titleLabel?.font = UIFont(name: "Avenir Next Demi Bold", size: 14)
+		self.showHeightButton.translatesAutoresizingMaskIntoConstraints = false
+	} 
 
 	//MARK: - SETUP
 	
@@ -226,11 +272,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	}
 	
 	
+	@objc func showHeightButtonTapped(){
+		if calendar.scope == .week {
+			calendar.setScope(.month, animated: true)
+			showHeightButton.setTitle("Close calendar", for: .normal)
+		} else {
+			calendar.setScope(.week, animated: true)
+			showHeightButton.setTitle("Open calendar", for: .normal)
+		}
+	}
+	
+	
 	//MARK: - TABLE VIEW
 	
 	
 	func setupTable() {
-		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 650), style: .insetGrouped)
+		self.tableView = UITableView(frame: CGRect(x: 0, y: 400, width: self.view.bounds.width, height: 200), style: .insetGrouped)
+		//height 650 y 0
 		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: indentifire)
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
@@ -343,3 +401,46 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	
 }
+
+//MARK: - Set Constrains
+extension ViewController {
+	
+	func setConstraits() {
+		
+		calendarHeightConstraint = NSLayoutConstraint(item: calendar, attribute: .height, relatedBy:  .equal, toItem: nil, attribute:  .notAnAttribute, multiplier: 1, constant: 300)
+		calendar.addConstraint(calendarHeightConstraint)
+		NSLayoutConstraint.activate([
+			calendar.topAnchor.constraint(equalTo: view.topAnchor, constant: 90),
+			calendar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+			calendar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+		])
+		
+		NSLayoutConstraint.activate([
+			showHeightButton.topAnchor.constraint(equalTo: calendar.bottomAnchor, constant: 0),
+			showHeightButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+			showHeightButton.widthAnchor.constraint(equalToConstant: 100),
+			showHeightButton.heightAnchor.constraint(equalToConstant: 20 )
+		])
+		
+		NSLayoutConstraint.activate([
+			//tableView.topAnchor.constraint(equalTo: showHeightButton.bottomAnchor, constant: 5),
+			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+			tableView.widthAnchor.constraint(equalToConstant: self.view.bounds.width),
+			//tableView.heightAnchor.constraint(equalToConstant: self.view.bounds.height)
+		])
+		
+	}
+	
+}
+//MARK: - EXTENTION
+extension ViewController: FSCalendarDataSource, FSCalendarDelegate, UITableViewDelegate, UITableViewDataSource {
+	func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
+		calendarHeightConstraint.constant = bounds.height
+		view.layoutIfNeeded()
+	}
+	
+	func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+		print(date)
+	}
+}
+
