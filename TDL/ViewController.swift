@@ -267,8 +267,8 @@ class ViewController: UIViewController {
 	private func setupOther(){
 		self.view.backgroundColor = UIColor(named: "BGColor")
 		let tabBarItem = UITabBarItem(title: nil,
-															image: UIImage(systemName: "checkmark.seal")?.withAlignmentRectInsets(.init(top: 10, left: 0, bottom: 0, right: 0)),
-															tag: 0)
+																	image: UIImage(systemName: "checkmark.seal")?.withAlignmentRectInsets(.init(top: 10, left: 0, bottom: 0, right: 0)),
+																	tag: 0)
 		self.tabBarItem = tabBarItem
 		
 	
@@ -293,14 +293,14 @@ class ViewController: UIViewController {
 	func setupTable() {
 		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height), style: .insetGrouped)
 		//height 650 y 0
-		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: indentifire)
+		self.tableView.register(TableViewCell.self, forCellReuseIdentifier: indentifire)
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
 		self.tableView.backgroundColor = UIColor(named: "BGColor")
 		//self.tableView.isScrollEnabled = true // скроллинг
 		self.tableView.bounces = false //если много ячеек прокрутка on. по дефолту off
 		self.tableView.separatorStyle = .singleLine
-		self.tableView.separatorStyle = .none
+		//self.tableView.separatorStyle = .none
 		self.tableView.rowHeight = 60
 		self.tableView.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(tableView)
@@ -308,13 +308,13 @@ class ViewController: UIViewController {
 	
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
-		let cell = self.tableView.cellForRow(at: indexPath)
-		let text = cell!.textLabel!.text!
-		indexP = indexPath.row
-		oldCellName = text
-		goToNewListEditing()
-	}
+			tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
+			let cell = self.tableView.cellForRow(at: indexPath)
+			let text = cell!.textLabel!.text!
+			indexP = indexPath.row
+			oldCellName = text
+			goToNewListEditing()
+		}
 	
 	
 	func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -373,12 +373,12 @@ class ViewController: UIViewController {
 	
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return 50.0
+		return 60.0
 	}
 	
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: indentifire, for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: indentifire, for: indexPath) as! TableViewCell
 		let task = tasksModels[indexPath.row]
 		cell.textLabel?.text = task.text
 		cell.backgroundColor = UIColor(named: "WhiteBlack")
@@ -431,8 +431,7 @@ extension ViewController {
 			tableView.topAnchor.constraint(equalTo: showHeightButton.bottomAnchor, constant: 5),
 			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
 			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-			tableView.widthAnchor.constraint(equalToConstant: self.view.bounds.width),
-			tableView.heightAnchor.constraint(equalToConstant: self.view.bounds.height)
+			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
 		])
 		
 	}
