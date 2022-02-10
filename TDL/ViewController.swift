@@ -217,12 +217,13 @@ class ViewController: UIViewController {
 	
 	func setupButton(){
 		self.buttonNewTask.frame = CGRect(x: self.view.bounds.width/2 - 50, y: 650, width: 100, height: 50)
-		self.buttonNewTask.backgroundColor = UIColor(named: "WhiteBlack")
+		self.buttonNewTask.backgroundColor = .blue
 		self.buttonNewTask.titleLabel?.font = UIFont(name: "Futura", size: 17)
 		self.buttonNewTask.setTitle("New task", for: .normal)
-		self.buttonNewTask.setTitleColor(UIColor (red: 50/255, green: 50/255, blue: 50/255, alpha: 1), for: .normal)
+		self.buttonNewTask.setTitleColor(UIColor.white, for: .normal)
 		self.buttonNewTask.layer.cornerRadius = 20
 		self.buttonNewTask.addTarget(self, action: #selector(goToNewList), for: .touchUpInside)
+		//self.buttonNewTask.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -50).isActive = true
 		view.addSubview(self.buttonNewTask)
 	}
 	
@@ -269,6 +270,9 @@ class ViewController: UIViewController {
 															image: UIImage(systemName: "checkmark.seal")?.withAlignmentRectInsets(.init(top: 10, left: 0, bottom: 0, right: 0)),
 															tag: 0)
 		self.tabBarItem = tabBarItem
+		
+	
+		
 	}
 	
 	
@@ -287,7 +291,7 @@ class ViewController: UIViewController {
 	
 	
 	func setupTable() {
-		self.tableView = UITableView(frame: CGRect(x: 0, y: 400, width: self.view.bounds.width, height: 200), style: .insetGrouped)
+		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height), style: .insetGrouped)
 		//height 650 y 0
 		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: indentifire)
 		self.tableView.delegate = self
@@ -298,6 +302,7 @@ class ViewController: UIViewController {
 		self.tableView.separatorStyle = .singleLine
 		self.tableView.separatorStyle = .none
 		self.tableView.rowHeight = 60
+		self.tableView.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(tableView)
 	}
 	
@@ -423,10 +428,11 @@ extension ViewController {
 		])
 		
 		NSLayoutConstraint.activate([
-			//tableView.topAnchor.constraint(equalTo: showHeightButton.bottomAnchor, constant: 5),
+			tableView.topAnchor.constraint(equalTo: showHeightButton.bottomAnchor, constant: 5),
 			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
 			tableView.widthAnchor.constraint(equalToConstant: self.view.bounds.width),
-			//tableView.heightAnchor.constraint(equalToConstant: self.view.bounds.height)
+			tableView.heightAnchor.constraint(equalToConstant: self.view.bounds.height)
 		])
 		
 	}

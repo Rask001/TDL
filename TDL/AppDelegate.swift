@@ -28,6 +28,7 @@ var window: UIWindow?
 		
 		let tabBarVC = UITabBarController()
 		tabBarVC.setViewControllers([firstNavController, secondNavController], animated: true)
+		tabBarVC.tabBar.backgroundColor = UIColor(named: "BGColor")
 		firstVC.loadViewIfNeeded()  //подгружает значек таб бара при запуске
 		secondVC.loadViewIfNeeded()  //подгружает значек таб бара при запуске
 		
