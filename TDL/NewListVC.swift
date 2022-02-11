@@ -7,11 +7,14 @@
 
 import UIKit
 var textTaskFromTF = ""
-
+var dateFromDatePicker = Date()
 class NewListVC: UIViewController, UITextFieldDelegate{
 
 	
+
+	
 	//MARK: - Properties
+//	let picker = UIPickerView()
 	let textField = UITextField()
 	let navigationBar = UINavigationBar()
 	let leftButton = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelFunc))
@@ -31,10 +34,30 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 		otherSetup()
 		textFieldSetup()
 		navigationBarSetup()
+		pickerSetup()
 	}
 	
 	
 	//MARK: - Setup
+	func pickerSetup() {
+		dataPicker.minimumDate = Date()
+		dataPicker.timeZone = .autoupdatingCurrent
+		let dateFormatter = DateFormatter()
+    dateFormatter.locale = Locale(identifier: "ru_RU")
+	  dateFormatter.dateFormat = "MMM d, HH:mm"
+		self.dataPicker.frame = CGRect(x: self.view.bounds.size.width/2 - 205, y: 300, width: 300, height: 50)
+		self.view.addSubview(dataPicker)
+		dataPicker.addTarget(self, action: #selector(dataPickerChange(paramDataPicker:)), for: .valueChanged)
+		
+	}
+	
+	@objc func dataPickerChange(paramDataPicker:UIDatePicker) {
+		if paramDataPicker.isEqual(self.dataPicker) {
+			
+			//dateFromDatePicker = paramDataPicker.date
+			print(dateFromDatePicker)
+		}
+	}
 	
 	//textFieldSetup
 	func textFieldSetup() {
@@ -87,5 +110,14 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 	@objc func cancelFunc(){
 		dismiss(animated: true, completion: nil)
 		self.textField.text = ""
+	}
+}
+extension NewListVC: UIPickerViewDataSource {
+	func numberOfComponents(in pickerView: UIPickerView) -> Int {
+		return 1
+	}
+	
+	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+		return 10
 	}
 }

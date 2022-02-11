@@ -47,6 +47,7 @@ class ViewController: UIViewController {
 		notification()
 		notificationEdit()
 		setConstraits()
+		//longPress()
 		//tapObservers()
 	}
 	
@@ -130,6 +131,12 @@ class ViewController: UIViewController {
 		present(leftMenuNC!, animated: true) :
 		leftMenuNC!.dismiss(animated: true, completion: nil)
 	}
+	
+//	func longPress(){
+//	let longpress = UILongPressGestureRecognizer(target: self, action: #selector(edit))
+//		longpress.minimumPressDuration = 0.4
+//	tableView.addGestureRecognizer(longpress)
+//	}
 	
 	func swipesObservers() {
 		let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes))
@@ -218,7 +225,7 @@ class ViewController: UIViewController {
 	func setupButton(){
 		self.buttonNewTask.frame = CGRect(x: self.view.bounds.width/2 - 50, y: 650, width: 100, height: 50)
 		self.buttonNewTask.backgroundColor = .blue
-		self.buttonNewTask.titleLabel?.font = UIFont(name: "Futura", size: 17)
+		self.buttonNewTask.titleLabel?.font = UIFont(name: "Avenir Next", size: 17)
 		self.buttonNewTask.setTitle("New task", for: .normal)
 		self.buttonNewTask.setTitleColor(UIColor.white, for: .normal)
 		self.buttonNewTask.layer.cornerRadius = 20
@@ -311,6 +318,8 @@ class ViewController: UIViewController {
 			tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
 			let cell = self.tableView.cellForRow(at: indexPath)
 			let text = cell!.textLabel!.text!
+//		  let alarmPicture : UIImage = UIImage(systemName: "Alarm")!
+//		  cell?.imageView!.image = alarmPicture
 			indexP = indexPath.row
 			oldCellName = text
 			goToNewListEditing()
@@ -387,7 +396,7 @@ class ViewController: UIViewController {
 	}
 	
 	
-	@objc func edit(Recognizer: UIBarButtonItem) {
+	@objc func edit(Recognizer: UILongPressGestureRecognizer) {
 		tableView.isEditing = !tableView.isEditing
 		tappedSoft()
 //		if Recognizer.state == .began {
@@ -396,7 +405,7 @@ class ViewController: UIViewController {
 //	} else if
 //		Recognizer.state == .ended{
 		//tappedRigid()
-	}
+}
 	
 	func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
 		let item = tasksModels[sourceIndexPath.row] //подняли наш айтем
