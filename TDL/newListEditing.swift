@@ -12,16 +12,24 @@ var oldCellName = ""
 class NewListEditing: UIViewController, UITextFieldDelegate {
 	
 	
+	//MARK: - Properties
 	let textField = UITextField()
 	let navigationBar = UINavigationBar()
 	let leftButton = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelFunc))
 	let rightButton = UIBarButtonItem(title: "continue", style: .plain, target: self, action: #selector(continueFunc))
 	
+	
+	//MARK: - viewWillAppear
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		textFieldSetup()//load cell name in tedxt field
+	}
+	
+	
 	//MARK: - viewDidAppear
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		self.textField.becomeFirstResponder()
-		textFieldSetup()
+		self.textField.becomeFirstResponder()//открытие клавиатуры
 	}
 	
 	
@@ -69,13 +77,13 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 		self.view.addSubview(navigationBar)
 	}
 	
-	//otherSetup
+	
 	func otherSetup(){
 		self.view.backgroundColor = .secondarySystemBackground
 	}
 	
 	
-//MARK: - Func
+	//MARK: - Func
 	@objc func continueFunc(){
 		guard let text = textField.text, !text.isEmpty else { return }
 		newCellName = text

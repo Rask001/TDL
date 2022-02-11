@@ -8,13 +8,15 @@
 import UIKit
 var textTaskFromTF = ""
 
-class NewListVC: UIViewController, UITextFieldDelegate {
+class NewListVC: UIViewController, UITextFieldDelegate{
+
 	
-	
+	//MARK: - Properties
 	let textField = UITextField()
 	let navigationBar = UINavigationBar()
 	let leftButton = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelFunc))
 	let rightButton = UIBarButtonItem(title: "continue", style: .plain, target: self, action: #selector(continueFunc))
+	let dataPicker = UIDatePicker()
 	
 	//MARK: - viewDidAppear
 	override func viewDidAppear(_ animated: Bool) {
@@ -39,7 +41,7 @@ class NewListVC: UIViewController, UITextFieldDelegate {
 		self.textField.delegate = self
 		//		self.textField.becomeFirstResponder()
 		self.textField.frame = CGRect(x: self.view.bounds.size.width/2 - 150, y: 80, width: 300, height: 31)
-		self.textField.placeholder = "craete new folder"
+		self.textField.placeholder = "craete new task"
 		self.textField.borderStyle = UITextField.BorderStyle.roundedRect
 		self.textField.backgroundColor = UIColor(named: "BWTrue")
 		self.view.addSubview(self.textField)

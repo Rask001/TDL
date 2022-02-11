@@ -12,13 +12,13 @@ class SecondVC: UIViewController {
 	let leftButton = UIBarButtonItem(title: "delete", style: .plain, target: self, action: #selector(deleteAll))
 	let rightButton = UIBarButtonItem(title: "setting", style: .plain, target: self, action: #selector(editFolders))
 	//(title: "delete", style: .plain, target: self, action: #selector(deleteAll))
-    override func viewDidLoad() {
-        super.viewDidLoad()
-			otherSetup()
-			navigationBarSetup()
-		}
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		otherSetup()
+		navigationBarSetup()
+	}
 	
-    
+	
 	@objc func deleteAll() {
 		print("hello")
 	}
@@ -30,22 +30,20 @@ class SecondVC: UIViewController {
 	func navigationBarSetup() {
 		self.navigationItem.leftBarButtonItem = leftButton
 		self.navigationItem.rightBarButtonItem = rightButton
-		self.navigationItem.title = "Folders"
-}
-
+		self.navigationItem.title = "In development"
+	}
+	
 	
 	
 	
 	func otherSetup() {
-		self.title = "In development"
-		self.view.backgroundColor = .lightGray
-		var tabBarItem = UITabBarItem()
-		tabBarItem = UITabBarItem(title: nil,
-																		image: UIImage(systemName: "xmark.seal"),
-																		tag: 1)
+		self.view.backgroundColor = .secondarySystemBackground
+		let tabBarItem = UITabBarItem(title: nil,
+															image: UIImage(systemName: "xmark.seal")?.withAlignmentRectInsets(.init(top: 10, left: 0, bottom: 0, right: 0)),
+															tag: 1)
 		self.tabBarItem = tabBarItem
 	}
-
-   
-
+	
+	
+	
 }
