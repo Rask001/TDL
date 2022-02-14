@@ -7,7 +7,8 @@
 
 import UIKit
 var textTaskFromTF = ""
-var dateFromDatePicker = Date()
+var dateFromDatePicker = ""
+//var dateDate = Date()
 class NewListVC: UIViewController, UITextFieldDelegate{
 
 	
@@ -40,11 +41,14 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 	
 	//MARK: - Setup
 	func pickerSetup() {
-		dataPicker.minimumDate = Date()
+		let dateNow = Date()
+//		let dateComponentsNow = dataPicker.calendar.dateComponents([.month, .day, .hour, .minute], from: dateNow)
+//		let dateFormatter = DateFormatter()
+//		dateFormatter.locale = Locale(identifier: "ru_RU")
+//		dateFormatter.dateFormat = "MMM d, HH:mm"
+//		let formatDate = dateFormatter.string(from: dateNow)
+		dataPicker.minimumDate = dateNow
 		dataPicker.timeZone = .autoupdatingCurrent
-		let dateFormatter = DateFormatter()
-    dateFormatter.locale = Locale(identifier: "ru_RU")
-	  dateFormatter.dateFormat = "MMM d, HH:mm"
 		self.dataPicker.frame = CGRect(x: self.view.bounds.size.width/2 - 205, y: 300, width: 300, height: 50)
 		self.view.addSubview(dataPicker)
 		dataPicker.addTarget(self, action: #selector(dataPickerChange(paramDataPicker:)), for: .valueChanged)
@@ -53,9 +57,14 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 	
 	@objc func dataPickerChange(paramDataPicker:UIDatePicker) {
 		if paramDataPicker.isEqual(self.dataPicker) {
-			
-			//dateFromDatePicker = paramDataPicker.date
-			print(dateFromDatePicker)
+			let dateFromDP = paramDataPicker.date
+//			let dateComponentsChange = dataPicker.calendar.dateComponents([.month, .day, .hour, .minute], from: dateFromDP)
+			let dateFormatter = DateFormatter()
+			//dateFormatter.locale = Locale(identifier: "ru_RU")
+			dateFormatter.dateFormat = "HH:mm"
+			let formatDate = dateFormatter.string(from: dateFromDP)
+			dateFromDatePicker = formatDate
+		print(dateFromDatePicker)
 		}
 	}
 	
@@ -102,6 +111,8 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 	@objc func continueFunc(){
 		guard let text = textField.text, !text.isEmpty else { return }
 		textTaskFromTF = text
+		let time = dateFromDatePicker
+		dateFromDatePicker = time
 		NotificationCenter.default.post(name: Notification.Name("Task"), object: .none)
 		cancelFunc()
 	}

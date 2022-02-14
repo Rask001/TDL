@@ -9,9 +9,16 @@ import UIKit
 
 class TableViewCell: UITableViewCell {
 	
+	let backgroundViewCell: UIView = {
+		let view = UIView()
+		view.backgroundColor = .white
+		view.layer.cornerRadius = 10
+		view.translatesAutoresizingMaskIntoConstraints = false
+		return view
+	}()
+	
 	let taskText: UILabel = {
 		let label = UILabel()
-		label.text = "\(dateFromDatePicker)"
 		label.textColor = .darkGray
 		label.font = UIFont(name: "Avenir Next", size: 16)
 		label.textAlignment = .right
@@ -45,31 +52,41 @@ class TableViewCell: UITableViewCell {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
 		setConstraints()
+		self.selectionStyle = .none
+		self.backgroundColor = .clear
 	}
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 
 	func setConstraints() {
-		self.addSubview(taskText)
+		self.backgroundViewCell.addSubview(taskText)
 		NSLayoutConstraint.activate([
-			taskText.topAnchor.constraint(equalTo: self.topAnchor, constant: 1),
-			taskText.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -3),
+			taskText.topAnchor.constraint(equalTo: self.backgroundViewCell.topAnchor, constant: 1),
+			taskText.trailingAnchor.constraint(equalTo: self.backgroundViewCell.trailingAnchor, constant: -3),
 			taskText.widthAnchor.constraint(equalToConstant: self.frame.width/6),
 		])
-		self.addSubview(alarmImageView)
+		self.backgroundViewCell.addSubview(alarmImageView)
 		NSLayoutConstraint.activate([
 //			alarmImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 3),
 //			alarmImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -3),
 //    	alarmImageView.widthAnchor.constraint(equalToConstant: self.frame.width/12),
 //	   	alarmImageView.heightAnchor.constraint(equalToConstant: self.frame.width/12),
 		])
-		self.addSubview(repeatImageView)
+		self.backgroundViewCell.addSubview(repeatImageView)
 		NSLayoutConstraint.activate([
 //			repeatImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 3),
 //			repeatImageView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -3),
 //			repeatImageView.widthAnchor.constraint(equalToConstant: self.frame.width/12),
 //			repeatImageView.heightAnchor.constraint(equalToConstant: self.frame.width/12),
+		])
+		
+		self.addSubview(backgroundViewCell)
+		NSLayoutConstraint.activate([
+			backgroundViewCell.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -2),
+			backgroundViewCell.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -15),
+			backgroundViewCell.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
+			backgroundViewCell.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
 		])
 	}
 }

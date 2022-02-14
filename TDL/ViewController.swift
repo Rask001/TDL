@@ -75,15 +75,17 @@ class ViewController: UIViewController {
 		//переносит введеный текст из newListVC в viewContrioller
 	}
 	@objc func addNewTask(notification: NSNotification){
-		self.saveTask(withTitle: textTaskFromTF)
+		self.saveTask(withTitle: textTaskFromTF, withTime: dateFromDatePicker)
 		tableView.reloadData()
 	}
-	func saveTask(withTitle title: String) {
+	func saveTask(withTitle title: String, withTime time: String) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		guard let entity = NSEntityDescription.entity(forEntityName: "Tasks", in: context) else {return}
 		let model = Tasks(entity: entity, insertInto: context)
 		model.text = title
+		model.timeLabel = time
+		
 		do{
 			try context.save()
 			tasksModels.append(model)
@@ -131,7 +133,6 @@ class ViewController: UIViewController {
 		present(leftMenuNC!, animated: true) :
 		leftMenuNC!.dismiss(animated: true, completion: nil)
 	}
-	
 //	func longPress(){
 //	let longpress = UILongPressGestureRecognizer(target: self, action: #selector(edit))
 //		longpress.minimumPressDuration = 0.4
@@ -298,7 +299,7 @@ class ViewController: UIViewController {
 	
 	
 	func setupTable() {
-		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height), style: .insetGrouped)
+		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height), style: .plain)
 		//height 650 y 0
 		self.tableView.register(TableViewCell.self, forCellReuseIdentifier: indentifire)
 		self.tableView.delegate = self
@@ -306,16 +307,16 @@ class ViewController: UIViewController {
 		self.tableView.backgroundColor = UIColor(named: "BGColor")
 		//self.tableView.isScrollEnabled = true // скроллинг
 		self.tableView.bounces = false //если много ячеек прокрутка on. по дефолту off
-		self.tableView.separatorStyle = .singleLine
-		//self.tableView.separatorStyle = .none
+		self.tableView.separatorStyle = .none
 		self.tableView.rowHeight = 60
 		self.tableView.translatesAutoresizingMaskIntoConstraints = false
 		view.addSubview(tableView)
 	}
 	
 	
+	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-			tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
+			//tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
 			let cell = self.tableView.cellForRow(at: indexPath)
 			let text = cell!.textLabel!.text!
 //		  let alarmPicture : UIImage = UIImage(systemName: "Alarm")!
@@ -390,8 +391,7 @@ class ViewController: UIViewController {
 		let cell = tableView.dequeueReusableCell(withIdentifier: indentifire, for: indexPath) as! TableViewCell
 		let task = tasksModels[indexPath.row]
 		cell.textLabel?.text = task.text
-		cell.backgroundColor = UIColor(named: "WhiteBlack")
-		//cell.accessoryType = .checkmark
+		cell.taskText.text = task.timeLabel
 		return cell
 	}
 	
