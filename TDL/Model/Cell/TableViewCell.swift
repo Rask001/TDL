@@ -17,12 +17,25 @@ class TableViewCell: UITableViewCell {
 		return view
 	}()
 	
-	let taskText: UILabel = {
+	let taskTitle: UILabel = {
+		let labelTitle = UILabel()
+		labelTitle.textColor = .black
+		labelTitle.font = UIFont(name: "Futura", size: 20)
+		labelTitle.textAlignment = .left
+		labelTitle.adjustsFontSizeToFitWidth = true
+		labelTitle.translatesAutoresizingMaskIntoConstraints = false
+		//label.backgroundColor = .lightGray
+		return labelTitle
+	}()
+
+	
+	
+	let taskTime: UILabel = {
 		let label = UILabel()
 		label.textColor = .darkGray
 		label.font = UIFont(name: "Avenir Next", size: 16)
 		label.textAlignment = .right
-		label.adjustsFontSizeToFitWidth = true
+		label.adjustsFontSizeToFitWidth = false //уменьшает шрифт при заполнении строки
 		label.translatesAutoresizingMaskIntoConstraints = false
 		//label.backgroundColor = .lightGray
 		return label
@@ -60,11 +73,11 @@ class TableViewCell: UITableViewCell {
 	}
 
 	func setConstraints() {
-		self.backgroundViewCell.addSubview(taskText)
+		self.backgroundViewCell.addSubview(taskTime)
 		NSLayoutConstraint.activate([
-			taskText.topAnchor.constraint(equalTo: self.backgroundViewCell.topAnchor, constant: 1),
-			taskText.trailingAnchor.constraint(equalTo: self.backgroundViewCell.trailingAnchor, constant: -3),
-			taskText.widthAnchor.constraint(equalToConstant: self.frame.width/6),
+			taskTime.topAnchor.constraint(equalTo: self.backgroundViewCell.topAnchor, constant: 1),
+			taskTime.trailingAnchor.constraint(equalTo: self.backgroundViewCell.trailingAnchor, constant: -3),
+			taskTime.widthAnchor.constraint(equalToConstant: self.frame.width/6),
 		])
 		self.backgroundViewCell.addSubview(alarmImageView)
 		NSLayoutConstraint.activate([
@@ -87,6 +100,13 @@ class TableViewCell: UITableViewCell {
 			backgroundViewCell.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -15),
 			backgroundViewCell.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
 			backgroundViewCell.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
+		])
+		
+		self.backgroundViewCell.addSubview(taskTitle)
+		NSLayoutConstraint.activate([
+			taskTitle.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+			taskTitle.leadingAnchor.constraint(equalTo: self.backgroundViewCell.leadingAnchor, constant: 25),
+			taskTitle.trailingAnchor.constraint(equalTo: self.repeatImageView.leadingAnchor, constant: -3)
 		])
 	}
 }

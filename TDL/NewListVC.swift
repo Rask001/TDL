@@ -49,7 +49,7 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 //		let formatDate = dateFormatter.string(from: dateNow)
 		dataPicker.minimumDate = dateNow
 		dataPicker.timeZone = .autoupdatingCurrent
-		self.dataPicker.frame = CGRect(x: self.view.bounds.size.width/2 - 205, y: 300, width: 300, height: 50)
+		self.dataPicker.frame = CGRect(x: self.view.bounds.width/2 - 210, y: 300, width: 300, height: 50)
 		self.view.addSubview(dataPicker)
 		dataPicker.addTarget(self, action: #selector(dataPickerChange(paramDataPicker:)), for: .valueChanged)
 		

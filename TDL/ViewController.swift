@@ -100,6 +100,7 @@ class ViewController: UIViewController {
 	@objc func goToNewListEditing(){
 			self.present(newListEditing, animated: true, completion: nil)
 		}
+	
 	func notificationEdit(){
 		NotificationCenter.default.addObserver(self, selector: #selector(editTask), name: Notification.Name("Edit"), object: .none)
 	}
@@ -316,22 +317,21 @@ class ViewController: UIViewController {
 	
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-			//tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
-			let cell = self.tableView.cellForRow(at: indexPath)
-			let text = cell!.textLabel!.text!
-//		  let alarmPicture : UIImage = UIImage(systemName: "Alarm")!
-//		  cell?.imageView!.image = alarmPicture
-			indexP = indexPath.row
-			oldCellName = text
-			goToNewListEditing()
-		}
+		//tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
+		let task = tasksModels[indexPath.row]
+		let text = task.text
+		
+		indexP = indexPath.row
+		oldCellName = text
+		goToNewListEditing()
+	}
 	
 	
 	func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		
 		let editButton = UIContextualAction(style: .normal, title: "") { action, view, completion in
-			let cell = self.tableView.cellForRow(at: indexPath)
-			let text = cell!.textLabel!.text!
+			let task = self.tasksModels[indexPath.row]
+			let text = task.text
 			self.indexP = indexPath.row
 			oldCellName = text
 			self.goToNewListEditing()
@@ -347,10 +347,6 @@ class ViewController: UIViewController {
 	
      
 		return UISwipeActionsConfiguration(actions: [editButton, editButton2])
-	}
-	
-	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-		return .delete
 	}
 	
 	
@@ -390,8 +386,8 @@ class ViewController: UIViewController {
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: indentifire, for: indexPath) as! TableViewCell
 		let task = tasksModels[indexPath.row]
-		cell.textLabel?.text = task.text
-		cell.taskText.text = task.timeLabel
+		cell.taskTitle.text = task.text
+		cell.taskTime.text = task.timeLabel
 		return cell
 	}
 	
@@ -406,6 +402,9 @@ class ViewController: UIViewController {
 //		Recognizer.state == .ended{
 		//tappedRigid()
 }
+	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+		return .delete
+	}
 	
 	func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
 		let item = tasksModels[sourceIndexPath.row] //подняли наш айтем
