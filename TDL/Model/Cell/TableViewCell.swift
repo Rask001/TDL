@@ -7,10 +7,11 @@
 
 import UIKit
 
+
 class TableViewCell: UITableViewCell {
-	
+	static let identifier = "TableViewCell"
 	var dateDate = Date()
-	
+
 	let backgroundViewCell: UIView = {
 		let view = UIView()
 		view.backgroundColor = .white
@@ -30,14 +31,21 @@ class TableViewCell: UITableViewCell {
 		return labelTitle
 	}()
 	
-	let buttonCell: UIButton = {
-		let button = UIButton(type: .system)
-		button.setImage(UIImage(systemName: "checkmark"), for: .normal)
+	var buttonCell = UIButton()
+	
+	func buttonCellSet(){
+		buttonCell = UIButton(type: .system)
+		if checkmark == true {
+			buttonCell.setImage(UIImage(systemName: "tarsh"), for: .normal)
+		}else{
+//			buttonCell.setImage(UIImage(systemName: "checkmark"), for: .normal)
+		}
 		//button.frame = CGRect(x:0, y:0, width: 50, height: 50)
-		button.backgroundColor = .cyan
-		button.translatesAutoresizingMaskIntoConstraints = false
-		return button
-	}()
+		buttonCell.layer.cornerRadius = 10
+		buttonCell.backgroundColor = UIColor(named: "BGColor")
+		buttonCell.translatesAutoresizingMaskIntoConstraints = false
+		print("end")
+	}
 	
 
 	
@@ -74,15 +82,27 @@ class TableViewCell: UITableViewCell {
 	
 	override init(style:UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+		contentView.backgroundColor = .clear
+		buttonCellSet()
 		setConstraintsCell()
 		self.selectionStyle = .none
-		self.backgroundColor = .clear
+  	self.backgroundColor = .clear
 	}
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
-
+	
+	
+	
+	func notificationEdit(){
+		NotificationCenter.default.addObserver(self, selector: #selector(checkNat), name: Notification.Name("checkmark"), object: .none)
+	}
+	@objc func checkNat(notificationEdit: NSNotification){
+		buttonCellSet()
+	}
+	
+	
+	
 	func setConstraintsCell() {
 		self.backgroundViewCell.addSubview(taskTime)
 		NSLayoutConstraint.activate([
@@ -104,13 +124,8 @@ class TableViewCell: UITableViewCell {
 //			repeatImageView.widthAnchor.constraint(equalToConstant: self.frame.width/12),
 //			repeatImageView.heightAnchor.constraint(equalToConstant: self.frame.width/12),
 		])
-		self.backgroundViewCell.addSubview(buttonCell)
-		NSLayoutConstraint.activate([
-			buttonCell.centerYAnchor.constraint(equalTo: self.backgroundViewCell.centerYAnchor),
-			buttonCell.leadingAnchor.constraint(equalTo: self.backgroundViewCell.leadingAnchor, constant: 10),
-//			buttonCell.widthAnchor.constraint(equalToConstant: self.backgroundViewCell.frame.width/12),
-//			buttonCell.heightAnchor.constraint(equalToConstant: self.backgroundViewCell.frame.width/12),
-		])
+		
+		
 		self.addSubview(backgroundViewCell)
 		NSLayoutConstraint.activate([
 			backgroundViewCell.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -2),
@@ -119,10 +134,18 @@ class TableViewCell: UITableViewCell {
 			backgroundViewCell.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5)
 		])
 		
+		self.backgroundViewCell.addSubview(buttonCell)
+		NSLayoutConstraint.activate([
+			buttonCell.centerYAnchor.constraint(equalTo: self.backgroundViewCell.centerYAnchor),
+			buttonCell.leadingAnchor.constraint(equalTo: self.backgroundViewCell.leadingAnchor, constant: 10),
+			buttonCell.heightAnchor.constraint(equalToConstant: 35),
+			buttonCell.widthAnchor.constraint(equalToConstant: 35)
+		])
+		
 		self.backgroundViewCell.addSubview(taskTitle)
 		NSLayoutConstraint.activate([
 			taskTitle.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-			taskTitle.leadingAnchor.constraint(equalTo: self.backgroundViewCell.leadingAnchor, constant: 40),
+			taskTitle.leadingAnchor.constraint(equalTo: buttonCell.trailingAnchor, constant: 8),
 			taskTitle.trailingAnchor.constraint(equalTo: self.repeatImageView.leadingAnchor, constant: -3)
 		])
 	}

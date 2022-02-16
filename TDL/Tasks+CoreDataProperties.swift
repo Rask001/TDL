@@ -21,7 +21,7 @@ extension Tasks {
     @NSManaged public var text: String
 	  @NSManaged public var timeLabel: String?
   	@NSManaged public var timeLabelDate: Date?
-	
+  	@NSManaged public var check: Bool
 	  @NSManaged public var folder: Folder?
 
 }

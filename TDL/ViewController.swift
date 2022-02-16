@@ -10,6 +10,8 @@ import CoreData
 import FSCalendar
 
 var menuOpen = false
+var checkmark = false
+
 
 class ViewController: UIViewController {
 	
@@ -75,10 +77,10 @@ class ViewController: UIViewController {
 		//переносит введеный текст из newListVC в viewContrioller
 	}
 	@objc func addNewTask(notification: NSNotification){
-		self.saveTask(withTitle: textTaskFromTF, withTime: dateFromDatePicker, withDate: newDate)
+		self.saveTask(withTitle: textTaskFromTF, withTime: dateFromDatePicker, withDate: newDate, withCheck: checkmark)
 		tableView.reloadData()
 	}
-	func saveTask(withTitle title: String, withTime time: String, withDate date: Date) {
+	func saveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		guard let entity = NSEntityDescription.entity(forEntityName: "Tasks", in: context) else {return}
@@ -86,6 +88,7 @@ class ViewController: UIViewController {
 		model.text = title
 		model.timeLabel = time
 		model.timeLabelDate = newDate
+		model.check = false
 		print (newDate)
 		
 		do{
@@ -107,10 +110,10 @@ class ViewController: UIViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(editTask), name: Notification.Name("Edit"), object: .none)
 	}
 	@objc func editTask(notificationEdit: NSNotification){
-		self.editAndSaveTask(withTitle: newCellName, withTime: dateFromDatePicker, withDate: newDate)
+		self.editAndSaveTask(withTitle: newCellName, withTime: dateFromDatePicker, withDate: newDate, withCheck: checkmark)
 		tableView.reloadData()
 	}
-	func editAndSaveTask(withTitle title: String, withTime time: String, withDate date: Date) {
+	func editAndSaveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		let model = tasksModels[indexP]
@@ -118,6 +121,7 @@ class ViewController: UIViewController {
 		model.text = title
 		model.timeLabel = time
 		model.timeLabelDate = date
+		model.check = false
 		do {
 			try context.save()
 		} catch let error as NSError {
@@ -229,7 +233,7 @@ class ViewController: UIViewController {
 	
 	func setupButton(){
 		self.buttonNewTask.frame = CGRect(x: self.view.bounds.width/2 - 50, y: 670, width: 100, height: 50)
-		self.buttonNewTask.backgroundColor = .blue
+		self.buttonNewTask.backgroundColor = UIColor(named: "BlackWhite")
 		self.buttonNewTask.titleLabel?.font = UIFont(name: "Avenir Next", size: 17)
 		self.buttonNewTask.setTitle("New task", for: .normal)
 		self.buttonNewTask.setTitleColor(UIColor.white, for: .normal)
@@ -305,7 +309,7 @@ class ViewController: UIViewController {
 	func setupTable() {
 		self.tableView = UITableView()
 //		self.tableView.frame = CGRect(x: 10, y: 0, width: 0, height: 0)
-		self.tableView.register(TableViewCell.self, forCellReuseIdentifier: indentifire)
+		self.tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.identifier)
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
 		self.tableView.backgroundColor = .clear//UIColor(named: "BGColor")
@@ -317,8 +321,7 @@ class ViewController: UIViewController {
 		//view.addSubview(tableView)
 	}
 	
-	
-	
+
 	
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -391,24 +394,52 @@ class ViewController: UIViewController {
 	
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: indentifire, for: indexPath) as! TableViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as! TableViewCell
 		let task = tasksModels[indexPath.row]
 		cell.taskTitle.text = task.text
 		cell.taskTime.text = task.timeLabel
-		
-//		let buttonCellqq = cell.buttonCell
-//
-//
-//		buttonCellqq.tag = indexPath.row
-//		buttonCellqq.addTarget(self, action: #selector(printy(sender:)), for: .touchUpInside)
-//		cell.accessoryView = buttonCellqq
+		indexP = indexPath.row
+		let buttonCellqq = cell.buttonCell
+		buttonCellqq.tag = indexPath.row
+		buttonCellqq.addTarget(self, action: #selector(printy(sender:)), for: .touchUpInside)
+    print(indexP)
 	  return cell
 	}
 	
 	
-	@objc func printy(sender: UIButton){
-		print("hello")
+	
+	
+	
+	
+	
+	
+	
+	@objc func printy(sender: UIButton) {
+	
+		if checkmark == false {
+			checkmark = true
+		} else {
+			checkmark = false
+		}
+		print(checkmark)
+//		NotificationCenter.default.post(name: Notification.Name("checkmark"), object: .none)
+		let appDelegate = UIApplication.shared.delegate as! AppDelegate
+		let context = appDelegate.persistentContainer.viewContext
+		let model = tasksModels[indexP]
+		
+		model.check = checkmark
+		do {
+			try context.save()
+		} catch let error as NSError {
+			print(error.localizedDescription)
 	}
+			//tableView.reloadData()
+		print("\(model.text), \(model.check)")
+	}
+	
+	
+	
+	
 	
 	@objc func edit(Recognizer: UILongPressGestureRecognizer) {
 		tableView.isEditing = !tableView.isEditing
