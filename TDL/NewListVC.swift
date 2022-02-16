@@ -8,6 +8,8 @@
 import UIKit
 var textTaskFromTF = ""
 var dateFromDatePicker = ""
+var newDate = Date()
+var oldDate = Date()
 //var dateDate = Date()
 class NewListVC: UIViewController, UITextFieldDelegate{
 
@@ -64,7 +66,8 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 			dateFormatter.dateFormat = "HH:mm"
 			let formatDate = dateFormatter.string(from: dateFromDP)
 			dateFromDatePicker = formatDate
-		print(dateFromDatePicker)
+			newDate = dateFromDP
+			print (newDate)
 		}
 	}
 	

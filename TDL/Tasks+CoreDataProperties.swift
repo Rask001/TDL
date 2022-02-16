@@ -19,8 +19,8 @@ extension Tasks {
 
     @NSManaged public var createdAt: Date?
     @NSManaged public var text: String
-	@NSManaged public var timeLabel: String?
-	
+	  @NSManaged public var timeLabel: String?
+  	@NSManaged public var timeLabelDate: Date?
 	
 	  @NSManaged public var folder: Folder?
 

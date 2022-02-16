@@ -75,16 +75,18 @@ class ViewController: UIViewController {
 		//переносит введеный текст из newListVC в viewContrioller
 	}
 	@objc func addNewTask(notification: NSNotification){
-		self.saveTask(withTitle: textTaskFromTF, withTime: dateFromDatePicker)
+		self.saveTask(withTitle: textTaskFromTF, withTime: dateFromDatePicker, withDate: newDate)
 		tableView.reloadData()
 	}
-	func saveTask(withTitle title: String, withTime time: String) {
+	func saveTask(withTitle title: String, withTime time: String, withDate date: Date) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		guard let entity = NSEntityDescription.entity(forEntityName: "Tasks", in: context) else {return}
 		let model = Tasks(entity: entity, insertInto: context)
 		model.text = title
 		model.timeLabel = time
+		model.timeLabelDate = newDate
+		print (newDate)
 		
 		do{
 			try context.save()
@@ -105,15 +107,17 @@ class ViewController: UIViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(editTask), name: Notification.Name("Edit"), object: .none)
 	}
 	@objc func editTask(notificationEdit: NSNotification){
-		self.editAndSaveTask(withTitle: newCellName)
+		self.editAndSaveTask(withTitle: newCellName, withTime: dateFromDatePicker, withDate: newDate)
 		tableView.reloadData()
 	}
-	func editAndSaveTask(withTitle title: String) {
+	func editAndSaveTask(withTitle title: String, withTime time: String, withDate date: Date) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		let model = tasksModels[indexP]
 		let title = newCellName
 		model.text = title
+		model.timeLabel = time
+		model.timeLabelDate = date
 		do {
 			try context.save()
 		} catch let error as NSError {
@@ -332,6 +336,7 @@ class ViewController: UIViewController {
 		let editButton = UIContextualAction(style: .normal, title: "") { action, view, completion in
 			let task = self.tasksModels[indexPath.row]
 			let text = task.text
+			oldDate = task.timeLabelDate!
 			self.indexP = indexPath.row
 			oldCellName = text
 			self.goToNewListEditing()
@@ -388,7 +393,8 @@ class ViewController: UIViewController {
 		let task = tasksModels[indexPath.row]
 		cell.taskTitle.text = task.text
 		cell.taskTime.text = task.timeLabel
-		return cell
+		//task.timeLabelDate = newDate
+	  return cell
 	}
 	
 	

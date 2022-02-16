@@ -8,10 +8,11 @@
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="text" attributeType="String"/>
         <attribute name="timeLabel" optional="YES" attributeType="String"/>
+        <attribute name="timeLabelDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="folder" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Folder" inverseName="tasks" inverseEntity="Folder"/>
     </entity>
     <elements>
         <element name="Folder" positionX="-666.88134765625" positionY="77.219482421875" width="128" height="58"/>
-        <element name="Tasks" positionX="-454.2620849609375" positionY="-243.3578491210938" width="128" height="89"/>
+        <element name="Tasks" positionX="-454.2620849609375" positionY="-243.3578491210938" width="128" height="104"/>
     </elements>
 </model>

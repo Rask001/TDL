@@ -9,6 +9,9 @@ import UIKit
 
 class TableViewCell: UITableViewCell {
 	
+	var dateDate = Date()
+
+	
 	let backgroundViewCell: UIView = {
 		let view = UIView()
 		view.backgroundColor = .white
@@ -20,15 +23,20 @@ class TableViewCell: UITableViewCell {
 	let taskTitle: UILabel = {
 		let labelTitle = UILabel()
 		labelTitle.textColor = .black
-		labelTitle.font = UIFont(name: "Futura", size: 20)
+		labelTitle.font = UIFont(name: "Avenir Next", size: 20)
 		labelTitle.textAlignment = .left
 		labelTitle.adjustsFontSizeToFitWidth = true
 		labelTitle.translatesAutoresizingMaskIntoConstraints = false
 		//label.backgroundColor = .lightGray
 		return labelTitle
 	}()
-
 	
+	let buttonCell: UIButton = {
+		let button = UIButton()
+		button.setImage(UIImage(systemName: "checkmark"), for: .normal)
+		button.frame = CGRect(x:0, y:0, width: 50, height: 50)
+		return button
+	}()
 	
 	let taskTime: UILabel = {
 		let label = UILabel()
@@ -93,7 +101,13 @@ class TableViewCell: UITableViewCell {
 //			repeatImageView.widthAnchor.constraint(equalToConstant: self.frame.width/12),
 //			repeatImageView.heightAnchor.constraint(equalToConstant: self.frame.width/12),
 		])
-		
+		self.backgroundViewCell.addSubview(buttonCell)
+		NSLayoutConstraint.activate([
+			buttonCell.centerYAnchor.constraint(equalTo: self.backgroundViewCell.centerYAnchor),
+			buttonCell.leadingAnchor.constraint(equalTo: self.backgroundViewCell.leadingAnchor, constant: 0),
+//			buttonCell.widthAnchor.constraint(equalToConstant: self.backgroundViewCell.frame.width/12),
+//			buttonCell.heightAnchor.constraint(equalToConstant: self.backgroundViewCell.frame.width/12),
+		])
 		self.addSubview(backgroundViewCell)
 		NSLayoutConstraint.activate([
 			backgroundViewCell.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -2),
@@ -105,7 +119,7 @@ class TableViewCell: UITableViewCell {
 		self.backgroundViewCell.addSubview(taskTitle)
 		NSLayoutConstraint.activate([
 			taskTitle.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-			taskTitle.leadingAnchor.constraint(equalTo: self.backgroundViewCell.leadingAnchor, constant: 25),
+			taskTitle.leadingAnchor.constraint(equalTo: self.backgroundViewCell.leadingAnchor, constant: 35),
 			taskTitle.trailingAnchor.constraint(equalTo: self.repeatImageView.leadingAnchor, constant: -3)
 		])
 	}

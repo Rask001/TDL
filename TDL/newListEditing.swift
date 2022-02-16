@@ -17,7 +17,7 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 	let navigationBar = UINavigationBar()
 	let leftButton = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelFunc))
 	let rightButton = UIBarButtonItem(title: "continue", style: .plain, target: self, action: #selector(continueFunc))
-	
+	let dataPicker = UIDatePicker()
 	
 	//MARK: - viewWillAppear
 	override func viewWillAppear(_ animated: Bool) {
@@ -38,6 +38,7 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 		super.viewDidLoad()
 		otherSetup()
 		navigationBarSetup()
+		pickerSetup()
 	}
 	
 	
@@ -63,6 +64,36 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 		//ввод/return на клавиатуре
 	}
 	
+	func pickerSetup() {
+		//let dateNow = Date()
+//		let dateComponentsNow = dataPicker.calendar.dateComponents([.month, .day, .hour, .minute], from: dateNow)
+//		let dateFormatter = DateFormatter()
+//		dateFormatter.locale = Locale(identifier: "ru_RU")
+//		dateFormatter.dateFormat = "MMM d, HH:mm"
+//		let formatDate = dateFormatter.string(from: dateNow)
+//
+		dataPicker.date = newDate
+		//dataPicker.minimumDate = dateNow
+		dataPicker.timeZone = .autoupdatingCurrent
+		self.dataPicker.frame = CGRect(x: self.view.bounds.width/2 - 210, y: 300, width: 300, height: 50)
+		self.view.addSubview(dataPicker)
+		dataPicker.addTarget(self, action: #selector(dataPickerChange(paramDataPicker:)), for: .valueChanged)
+		
+	}
+	
+	@objc func dataPickerChange(paramDataPicker:UIDatePicker) {
+		if paramDataPicker.isEqual(self.dataPicker) {
+			let dateFromDP = paramDataPicker.date
+//			let dateComponentsChange = dataPicker.calendar.dateComponents([.month, .day, .hour, .minute], from: dateFromDP)
+			let dateFormatter = DateFormatter()
+			dateFormatter.locale = Locale(identifier: "ru_RU")
+			dateFormatter.dateFormat = "HH:mm"
+			let formatDate = dateFormatter.string(from: dateFromDP)
+			newDate = dateFromDP
+			dateFromDatePicker = formatDate
+		print(dateFromDatePicker)
+		}
+	}
 	
 	//navigationBarSetup
 	func navigationBarSetup() {
@@ -87,6 +118,9 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 	@objc func continueFunc(){
 		guard let text = textField.text, !text.isEmpty else { return }
 		newCellName = text
+		let date = dataPicker.date
+		newDate = date
+
 		NotificationCenter.default.post(name: Notification.Name("Edit"), object: .none)
 		cancelFunc()
 	}
