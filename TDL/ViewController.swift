@@ -42,8 +42,8 @@ class ViewController: UIViewController {
 		setupOther()
 		swipesObservers()
 		swipeCalendar()
-		setupTable()
 		setupButton()
+		setupTable()
 		notification()
 		notificationEdit()
 		setConstraits()
@@ -188,10 +188,11 @@ class ViewController: UIViewController {
 	}
 	
 	@objc func singleTapAction(){
-		if menuOpen {
-			didTapMenu()
-			tappedSoft()
-		}
+		print("koko yopta")
+//		if menuOpen {
+//			didTapMenu()
+//			tappedSoft()
+//		}
 	}
 	
 	@objc func handleSwipes(gester: UISwipeGestureRecognizer){
@@ -227,7 +228,7 @@ class ViewController: UIViewController {
 	//MARK: - SETUP
 	
 	func setupButton(){
-		self.buttonNewTask.frame = CGRect(x: self.view.bounds.width/2 - 50, y: 650, width: 100, height: 50)
+		self.buttonNewTask.frame = CGRect(x: self.view.bounds.width/2 - 50, y: 670, width: 100, height: 50)
 		self.buttonNewTask.backgroundColor = .blue
 		self.buttonNewTask.titleLabel?.font = UIFont(name: "Avenir Next", size: 17)
 		self.buttonNewTask.setTitle("New task", for: .normal)
@@ -235,7 +236,7 @@ class ViewController: UIViewController {
 		self.buttonNewTask.layer.cornerRadius = 20
 		self.buttonNewTask.addTarget(self, action: #selector(goToNewList), for: .touchUpInside)
 		//self.buttonNewTask.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -50).isActive = true
-		view.addSubview(self.buttonNewTask)
+		tableView.addSubview(buttonNewTask)
 	}
 	
 	
@@ -307,13 +308,13 @@ class ViewController: UIViewController {
 		self.tableView.register(TableViewCell.self, forCellReuseIdentifier: indentifire)
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
-		self.tableView.backgroundColor = UIColor(named: "BGColor")
+		self.tableView.backgroundColor = .clear//UIColor(named: "BGColor")
 		//self.tableView.isScrollEnabled = true // скроллинг
-		self.tableView.bounces = false //если много ячеек прокрутка on. по дефолту off
+		self.tableView.bounces = true //если много ячеек прокрутка on. по дефолту off
 		self.tableView.separatorStyle = .none
 		self.tableView.rowHeight = 60
 		self.tableView.translatesAutoresizingMaskIntoConstraints = false
-//		view.addSubview(tableView)
+		//view.addSubview(tableView)
 	}
 	
 	
@@ -325,7 +326,7 @@ class ViewController: UIViewController {
 		let task = tasksModels[indexPath.row]
 		let text = task.text
 
-		
+
 		indexP = indexPath.row
 		oldCellName = text
 		goToNewListEditing()
@@ -395,15 +396,18 @@ class ViewController: UIViewController {
 		cell.taskTitle.text = task.text
 		cell.taskTime.text = task.timeLabel
 		
-		cell.buttonCell.tag = indexPath.row
-		cell.buttonCell.addTarget(self, action: #selector(printy(sender:)), for: .touchUpInside)
-    //task.timeLabelDate = newDate
+//		let buttonCellqq = cell.buttonCell
+//
+//
+//		buttonCellqq.tag = indexPath.row
+//		buttonCellqq.addTarget(self, action: #selector(printy(sender:)), for: .touchUpInside)
+//		cell.accessoryView = buttonCellqq
 	  return cell
 	}
 	
+	
 	@objc func printy(sender: UIButton){
-		let rowIndex = sender.tag
-		print(rowIndex)
+		print("hello")
 	}
 	
 	@objc func edit(Recognizer: UILongPressGestureRecognizer) {
@@ -450,14 +454,16 @@ extension ViewController {
 		])
 		view.addSubview(tableView)
 		NSLayoutConstraint.activate([
-			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 5),
+			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2),
 			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
 			tableView.topAnchor.constraint(equalTo: showHeightButton.bottomAnchor, constant: 5),
 			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5)
 		])
-		
+		view.addSubview(buttonNewTask)
+		NSLayoutConstraint.activate([
+		])
 	}
-	
+	//buttonNewTask.topAnchor,
 }
 //MARK: - EXTENTION
 extension ViewController: FSCalendarDataSource, FSCalendarDelegate, UITableViewDelegate, UITableViewDataSource {

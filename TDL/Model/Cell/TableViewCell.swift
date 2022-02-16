@@ -33,16 +33,13 @@ class TableViewCell: UITableViewCell {
 	let buttonCell: UIButton = {
 		let button = UIButton(type: .system)
 		button.setImage(UIImage(systemName: "checkmark"), for: .normal)
-		button.frame = CGRect(x:0, y:0, width: 50, height: 50)
+		//button.frame = CGRect(x:0, y:0, width: 50, height: 50)
 		button.backgroundColor = .cyan
 		button.translatesAutoresizingMaskIntoConstraints = false
-		
 		return button
 	}()
 	
-	@objc func printy(sender: UIButton){
-		print("tapped cell button")
-	}
+
 	
 	let taskTime: UILabel = {
 		let label = UILabel()
@@ -78,7 +75,7 @@ class TableViewCell: UITableViewCell {
 	override init(style:UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-		setConstraints()
+		setConstraintsCell()
 		self.selectionStyle = .none
 		self.backgroundColor = .clear
 	}
@@ -86,7 +83,7 @@ class TableViewCell: UITableViewCell {
 		fatalError("init(coder:) has not been implemented")
 	}
 
-	func setConstraints() {
+	func setConstraintsCell() {
 		self.backgroundViewCell.addSubview(taskTime)
 		NSLayoutConstraint.activate([
 			taskTime.topAnchor.constraint(equalTo: self.backgroundViewCell.topAnchor, constant: 1),
