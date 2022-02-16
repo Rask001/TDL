@@ -10,7 +10,6 @@ import UIKit
 class TableViewCell: UITableViewCell {
 	
 	var dateDate = Date()
-
 	
 	let backgroundViewCell: UIView = {
 		let view = UIView()
@@ -32,11 +31,18 @@ class TableViewCell: UITableViewCell {
 	}()
 	
 	let buttonCell: UIButton = {
-		let button = UIButton()
+		let button = UIButton(type: .system)
 		button.setImage(UIImage(systemName: "checkmark"), for: .normal)
 		button.frame = CGRect(x:0, y:0, width: 50, height: 50)
+		button.backgroundColor = .cyan
+		button.translatesAutoresizingMaskIntoConstraints = false
+		
 		return button
 	}()
+	
+	@objc func printy(sender: UIButton){
+		print("tapped cell button")
+	}
 	
 	let taskTime: UILabel = {
 		let label = UILabel()
@@ -104,22 +110,22 @@ class TableViewCell: UITableViewCell {
 		self.backgroundViewCell.addSubview(buttonCell)
 		NSLayoutConstraint.activate([
 			buttonCell.centerYAnchor.constraint(equalTo: self.backgroundViewCell.centerYAnchor),
-			buttonCell.leadingAnchor.constraint(equalTo: self.backgroundViewCell.leadingAnchor, constant: 0),
+			buttonCell.leadingAnchor.constraint(equalTo: self.backgroundViewCell.leadingAnchor, constant: 10),
 //			buttonCell.widthAnchor.constraint(equalToConstant: self.backgroundViewCell.frame.width/12),
 //			buttonCell.heightAnchor.constraint(equalToConstant: self.backgroundViewCell.frame.width/12),
 		])
 		self.addSubview(backgroundViewCell)
 		NSLayoutConstraint.activate([
 			backgroundViewCell.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -2),
-			backgroundViewCell.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -15),
+			backgroundViewCell.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
 			backgroundViewCell.topAnchor.constraint(equalTo: self.topAnchor, constant: 0),
-			backgroundViewCell.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
+			backgroundViewCell.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5)
 		])
 		
 		self.backgroundViewCell.addSubview(taskTitle)
 		NSLayoutConstraint.activate([
 			taskTitle.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-			taskTitle.leadingAnchor.constraint(equalTo: self.backgroundViewCell.leadingAnchor, constant: 35),
+			taskTitle.leadingAnchor.constraint(equalTo: self.backgroundViewCell.leadingAnchor, constant: 40),
 			taskTitle.trailingAnchor.constraint(equalTo: self.repeatImageView.leadingAnchor, constant: -3)
 		])
 	}

@@ -210,7 +210,6 @@ class ViewController: UIViewController {
 	}
 	
 	func calendarSetup(){
-		view.addSubview(calendar)
 		self.calendar.translatesAutoresizingMaskIntoConstraints = false
 		self.calendar.dataSource = self
 		self.calendar.delegate = self
@@ -218,7 +217,6 @@ class ViewController: UIViewController {
 	}
 	
 	func showHeightButtonSetup() {
-		view.addSubview(showHeightButton)
 		self.showHeightButton.addTarget(self, action: #selector(showHeightButtonTapped), for: .touchUpInside)
 		self.showHeightButton.setTitle("Open calendar", for: .normal)
 		self.showHeightButton.setTitleColor(UIColor.gray, for: .normal)
@@ -304,8 +302,8 @@ class ViewController: UIViewController {
 	
 	
 	func setupTable() {
-		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: self.view.bounds.height), style: .plain)
-		//height 650 y 0
+		self.tableView = UITableView()
+//		self.tableView.frame = CGRect(x: 10, y: 0, width: 0, height: 0)
 		self.tableView.register(TableViewCell.self, forCellReuseIdentifier: indentifire)
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
@@ -315,8 +313,10 @@ class ViewController: UIViewController {
 		self.tableView.separatorStyle = .none
 		self.tableView.rowHeight = 60
 		self.tableView.translatesAutoresizingMaskIntoConstraints = false
-		view.addSubview(tableView)
+//		view.addSubview(tableView)
 	}
+	
+	
 	
 	
 	
@@ -324,6 +324,7 @@ class ViewController: UIViewController {
 		//tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
 		let task = tasksModels[indexPath.row]
 		let text = task.text
+
 		
 		indexP = indexPath.row
 		oldCellName = text
@@ -393,10 +394,17 @@ class ViewController: UIViewController {
 		let task = tasksModels[indexPath.row]
 		cell.taskTitle.text = task.text
 		cell.taskTime.text = task.timeLabel
-		//task.timeLabelDate = newDate
+		
+		cell.buttonCell.tag = indexPath.row
+		cell.buttonCell.addTarget(self, action: #selector(printy(sender:)), for: .touchUpInside)
+    //task.timeLabelDate = newDate
 	  return cell
 	}
 	
+	@objc func printy(sender: UIButton){
+		let rowIndex = sender.tag
+		print(rowIndex)
+	}
 	
 	@objc func edit(Recognizer: UILongPressGestureRecognizer) {
 		tableView.isEditing = !tableView.isEditing
@@ -425,7 +433,7 @@ class ViewController: UIViewController {
 extension ViewController {
 	
 	func setConstraits() {
-		
+		view.addSubview(calendar)
 		calendarHeightConstraint = NSLayoutConstraint(item: calendar, attribute: .height, relatedBy:  .equal, toItem: nil, attribute:  .notAnAttribute, multiplier: 1, constant: 300)
 		calendar.addConstraint(calendarHeightConstraint)
 		NSLayoutConstraint.activate([
@@ -433,19 +441,19 @@ extension ViewController {
 			calendar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
 			calendar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
 		])
-		
+		view.addSubview(showHeightButton)
 		NSLayoutConstraint.activate([
 			showHeightButton.topAnchor.constraint(equalTo: calendar.bottomAnchor, constant: 0),
 			showHeightButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
 			showHeightButton.widthAnchor.constraint(equalToConstant: 100),
 			showHeightButton.heightAnchor.constraint(equalToConstant: 20 )
 		])
-		
+		view.addSubview(tableView)
 		NSLayoutConstraint.activate([
+			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 5),
+			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
 			tableView.topAnchor.constraint(equalTo: showHeightButton.bottomAnchor, constant: 5),
-			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5)
 		])
 		
 	}
