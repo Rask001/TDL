@@ -13,8 +13,14 @@ import FSCalendar
 var menuOpen = false
 var checkmark = false
 var indexOfCheck = Int()
-
-
+var textTaskFromTF = ""
+var dateFromDatePicker = ""
+var newDate = Date()
+var oldDate = Date()
+var newCellName = ""
+var oldCellName = ""
+var switchAlert = UISwitch()
+var switchAlertRepeat = UISwitch()
 class ViewController: UIViewController {
 	
 	
@@ -33,8 +39,25 @@ class ViewController: UIViewController {
 	let showHeightButton = UIButton()
 
 	
+	//MARK: - viewWillAppear
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+		let fetchRequest: NSFetchRequest<Tasks> = Tasks.fetchRequest() //используем классовый метод
+		do{
+			tasksModels = try context.fetch(fetchRequest)
+		} catch let error as NSError {
+			print(error.localizedDescription)
+		}
+	}
 	
-
+	
+	//MARK: - viewDidAppear
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		animateTableView()
+	}
+	
 	
 	//MARK: - viewDidLoad
 	override func viewDidLoad() {
@@ -55,17 +78,7 @@ class ViewController: UIViewController {
 		//tapObservers()
 	}
 	
-	//MARK: - viewWillAppear
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
-		let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-		let fetchRequest: NSFetchRequest<Tasks> = Tasks.fetchRequest() //используем классовый метод
-		do{
-			tasksModels = try context.fetch(fetchRequest)
-		} catch let error as NSError {
-			print(error.localizedDescription)
-		}
-	}
+
 	
 
 
@@ -133,11 +146,13 @@ class ViewController: UIViewController {
 		model.timeLabel = time
 		model.timeLabelDate = date
 		model.check = false
+
 		do {
 			try context.save()
 		} catch let error as NSError {
 			print(error.localizedDescription)
 		}
+		sendReminderNotification("Напоминание \(time)", title, date)
 	}
 	
 	
@@ -199,6 +214,11 @@ class ViewController: UIViewController {
 	
 	@objc func tappedSoft() {
 		let generator = UIImpactFeedbackGenerator(style: .soft)
+		generator.impactOccurred()
+	}
+	
+	@objc func tappedRigid() {
+		let generator = UIImpactFeedbackGenerator(style: .rigid)
 		generator.impactOccurred()
 	}
 	
@@ -372,22 +392,29 @@ class ViewController: UIViewController {
 	
 	
 	
-	
+	//MARK: Delete Cell
 	
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-		
-		let areYouSureAllert = UIAlertController(title: "Delete task", message: nil, preferredStyle: .actionSheet)
+		tappedRigid()
+		let task = tasksModels[indexPath.row]
+		let nameCell = task.text
+		let areYouSureAllert = UIAlertController(title: "Delete '\(nameCell)'?", message: nil, preferredStyle: .actionSheet)
 		let yesAction = UIAlertAction(title: "Delete", style: .destructive){
 			[self] action in
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		let index = indexPath.row
+			
+		UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["id_\(nameCell)"])
+			
 		context.delete(tasksModels[index] as NSManagedObject)
 		tasksModels.remove(at: index)
-			self.tableView.deleteRows(at: [indexPath], with: .left)
 		
 		let _ : NSError! = nil
 		do {
+			self.tableView.deleteRows(at: [indexPath], with: .left)
+			
+			
 			try context.save()
 			self.tableView.reloadData()
 		} catch {
@@ -406,6 +433,9 @@ class ViewController: UIViewController {
 	
 	}
 	
+//	func removePendingNotificationRequests(withIdentifiers identifiers: [String]){
+//
+//	}
 	
 	
 	
@@ -479,23 +509,9 @@ class ViewController: UIViewController {
 		print("\(model.text), \(model.check)")
 	}
 	
+
 	
-//	@objc func allertSure() {
-//		let areYouSureAllert = UIAlertController(title: "Delete all folders", message: nil, preferredStyle: .actionSheet)
-//		let yesAction = UIAlertAction(title: "Delete", style: .destructive) { [self] action in
-//
-//			tableView.reloadData()
-//		}
-//
-//		let noAction = UIAlertAction(title: "Cancel", style: .cancel) { action in
-//		}
-//		areYouSureAllert.addAction(yesAction)
-//		areYouSureAllert.addAction(noAction)
-//
-//		present(areYouSureAllert, animated: true)
-//	}
 	
-		
 	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
 		return .delete
 	}
@@ -506,7 +522,27 @@ class ViewController: UIViewController {
 		tasksModels.insert(item, at: destinationIndexPath.row) // положили на новое место
 	}
 	
-	
+	func animateTableView(){
+		tableView.reloadData()
+		let cells = tableView.visibleCells
+		let tableViewHeight = tableView.bounds.height
+		let tableViewHeightMinus = -tableViewHeight-20
+		//- (tableViewHeight * 2)
+		var delay: Double = 0
+		for cell in cells {
+			cell.transform = CGAffineTransform(translationX: 0, y: tableViewHeightMinus)
+			
+			UIView.animate(withDuration: 0.7,
+										 delay: delay * 0.08,
+										 usingSpringWithDamping: 0.8,
+										 initialSpringVelocity: 0,
+										 options: .curveEaseInOut,
+										 animations: {
+				cell.transform = CGAffineTransform.identity
+			})
+			delay += 1
+		}
+	}
 }
 
 //MARK: - Set Constrains
@@ -552,4 +588,5 @@ extension ViewController: FSCalendarDataSource, FSCalendarDelegate, UITableViewD
 		print(date)
 	}
 }
+
 

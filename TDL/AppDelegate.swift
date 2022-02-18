@@ -44,15 +44,15 @@ var window: UIWindow?
 		notificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
 			guard success else { return }
 			self.notificationCenter.getNotificationSettings { (settings) in
-				print(settings)
 				guard settings.authorizationStatus == .authorized else { return }
 			}
 		}
 		notificationCenter.delegate = self
 		return true
+		
 	}
 
-	
+
 	
 	
 	
@@ -84,6 +84,7 @@ var window: UIWindow?
 	    })
 	    return container
 	}()
+	
 
 	// MARK: - Core Data Saving support
 

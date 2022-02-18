@@ -6,10 +6,7 @@
 //
 
 import UIKit
-var textTaskFromTF = ""
-var dateFromDatePicker = ""
-var newDate = Date()
-var oldDate = Date()
+
 //var dateDate = Date()
 class NewListVC: UIViewController, UITextFieldDelegate{
 
@@ -38,6 +35,8 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 		textFieldSetup()
 		navigationBarSetup()
 		pickerSetup()
+		switchAlertSetup()
+		switchAlertRepeatSetup()
 	}
 	
 	
@@ -49,9 +48,10 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 //		dateFormatter.locale = Locale(identifier: "ru_RU")
 //		dateFormatter.dateFormat = "MMM d, HH:mm"
 //		let formatDate = dateFormatter.string(from: dateNow)
+		dataPicker.isEnabled = false
 		dataPicker.minimumDate = dateNow
 		dataPicker.timeZone = .autoupdatingCurrent
-		self.dataPicker.frame = CGRect(x: self.view.bounds.width/2 - 210, y: 300, width: 300, height: 50)
+		self.dataPicker.frame = CGRect(x: self.view.bounds.width/2 - 210, y: 200, width: 300, height: 50)
 		self.view.addSubview(dataPicker)
 		dataPicker.addTarget(self, action: #selector(dataPickerChange(paramDataPicker:)), for: .valueChanged)
 		
@@ -71,6 +71,32 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 		}
 	}
 	
+	
+	func switchAlertSetup(){
+		switchAlert.frame = CGRect(x: 30, y: 210, width: 0, height: 0)
+		switchAlert.isOn = false
+		switchAlert.addTarget(self, action: #selector(reminder), for: .valueChanged)
+		self.view.addSubview(switchAlert)
+	}
+	
+	func switchAlertRepeatSetup(){
+		switchAlertRepeat.frame = CGRect(x: 30, y: 260, width: 0, height: 0)
+		switchAlertRepeat.isOn = false
+		switchAlertRepeat.addTarget(self, action: #selector(repeatReminder), for: .valueChanged)
+		self.view.addSubview(switchAlertRepeat)
+	}
+	
+	@objc func reminder(){
+		if switchAlert.isOn == true {
+			dataPicker.isEnabled = true
+		}else{
+			dataPicker.isEnabled = false
+		}
+	}
+	
+	@objc func repeatReminder(){
+		print("тут будут повторы")
+	}
 	//textFieldSetup
 	func textFieldSetup() {
 		self.textField.delegate = self

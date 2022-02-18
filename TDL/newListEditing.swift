@@ -7,8 +7,7 @@
 
 
 import UIKit
-var newCellName = ""
-var oldCellName = ""
+
 class NewListEditing: UIViewController, UITextFieldDelegate {
 	
 	
@@ -18,6 +17,8 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 	let leftButton = UIBarButtonItem(title: "cancel", style: .plain, target: self, action: #selector(cancelFunc))
 	let rightButton = UIBarButtonItem(title: "continue", style: .plain, target: self, action: #selector(continueFunc))
 	let dataPicker = UIDatePicker()
+	let switchAlert = UISwitch()
+	
 	
 	//MARK: - viewWillAppear
 	override func viewWillAppear(_ animated: Bool) {
