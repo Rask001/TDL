@@ -7,6 +7,8 @@
 
 import UIKit
 import CoreData
+import UserNotifications
+
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -17,6 +19,7 @@ var window: UIWindow?
 	
 	let firstVC = ViewController()
 	let secondVC = SecondVC()
+	let notificationCenter = UNUserNotificationCenter.current()
 	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions:
 									 [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -37,8 +40,15 @@ var window: UIWindow?
 		window?.rootViewController = tabBarVC
 		window?.makeKeyAndVisible()
 		
-		
-		
+		//запрос на локальные уведомления, request local notification
+		notificationCenter.requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+			guard success else { return }
+			self.notificationCenter.getNotificationSettings { (settings) in
+				print(settings)
+				guard settings.authorizationStatus == .authorized else { return }
+			}
+		}
+		notificationCenter.delegate = self
 		return true
 	}
 
@@ -93,3 +103,14 @@ var window: UIWindow?
 
 }
 
+//MARK: NOTIFICATION EXTENSION
+extension AppDelegate: UNUserNotificationCenterDelegate {
+	func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+		completionHandler([.sound, .banner])
+		print("уведомление в то время как приложение открыто")
+	}
+	
+	func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+		print("тут можно что-нибудь сделать когда пользователь нажимает на уведомление")
+	}
+}

@@ -8,9 +8,11 @@ import SideMenu
 import UIKit
 import CoreData
 import FSCalendar
+//import UserNotifications
 
 var menuOpen = false
 var checkmark = false
+var indexOfCheck = Int()
 
 
 class ViewController: UIViewController {
@@ -77,10 +79,14 @@ class ViewController: UIViewController {
 		//переносит введеный текст из newListVC в viewContrioller
 	}
 	@objc func addNewTask(notification: NSNotification){
-		self.saveTask(withTitle: textTaskFromTF, withTime: dateFromDatePicker, withDate: newDate, withCheck: checkmark)
+		self.saveTask(withTitle: textTaskFromTF,
+									withTime: dateFromDatePicker,
+									withDate: newDate,
+									withCheck: checkmark,
+									withIndex: Int16(indexOfCheck))
 		tableView.reloadData()
 	}
-	func saveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool) {
+	func saveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool, withIndex index: Int16) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		guard let entity = NSEntityDescription.entity(forEntityName: "Tasks", in: context) else {return}
@@ -89,6 +95,7 @@ class ViewController: UIViewController {
 		model.timeLabel = time
 		model.timeLabelDate = newDate
 		model.check = false
+		model.numberOfCheck = Int16(tasksModels.count + 1)
 		print (newDate)
 		
 		do{
@@ -96,8 +103,11 @@ class ViewController: UIViewController {
 			tasksModels.append(model)
 		} catch let error as NSError {
 			print(error.localizedDescription)
-		}
+    }
+		
+		sendReminderNotification("Напоминание \(time)", title, newDate)
 	}
+
 	
 	
 	
@@ -112,6 +122,7 @@ class ViewController: UIViewController {
 	@objc func editTask(notificationEdit: NSNotification){
 		self.editAndSaveTask(withTitle: newCellName, withTime: dateFromDatePicker, withDate: newDate, withCheck: checkmark)
 		tableView.reloadData()
+		print("проверка")
 	}
 	func editAndSaveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -265,10 +276,10 @@ class ViewController: UIViewController {
 																														style: .plain,
 																														target: self,
 																														action: #selector(didTapMenu))
-		let rightButton = UIBarButtonItem(image: UIImage(systemName: "gear"),
+		let rightButton = UIBarButtonItem(image: UIImage(systemName: "bell"),
 																			style: .plain,
 																			target: self,
-																			action: #selector(edit))
+																			action: #selector(pushNotification))
 		self.navigationItem.rightBarButtonItem = rightButton
 	}
 	
@@ -395,17 +406,27 @@ class ViewController: UIViewController {
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as! TableViewCell
+		
 		let task = tasksModels[indexPath.row]
 		cell.taskTitle.text = task.text
 		cell.taskTime.text = task.timeLabel
-		indexP = indexPath.row
+		
+		if task.check == false {
+			cell.buttonCell.backgroundColor = UIColor(named: "BGColor")
+		}else{
+			cell.buttonCell.backgroundColor = UIColor.white
+		}
+		
+	
+		
 		let buttonCellqq = cell.buttonCell
-		buttonCellqq.tag = indexPath.row
+		
 		buttonCellqq.addTarget(self, action: #selector(printy(sender:)), for: .touchUpInside)
-    print(indexP)
+    print(indexPath.row)
+	
+		
 	  return cell
 	}
-	
 	
 	
 	
@@ -421,11 +442,11 @@ class ViewController: UIViewController {
 		} else {
 			checkmark = false
 		}
-		print(checkmark)
-//		NotificationCenter.default.post(name: Notification.Name("checkmark"), object: .none)
+	
+		print("22\(checkmark)")
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
-		let model = tasksModels[indexP]
+		let model = tasksModels[0]
 		
 		model.check = checkmark
 		do {
@@ -433,24 +454,54 @@ class ViewController: UIViewController {
 		} catch let error as NSError {
 			print(error.localizedDescription)
 	}
-			//tableView.reloadData()
+			tableView.reloadData()
 		print("\(model.text), \(model.check)")
 	}
 	
 	
 	
+	//MARK: USER PUSH NOTIFICATION
+	
+	@objc func pushNotification() {
+////		tableView.isEditing = !tableView.isEditing
+////		tappedSoft()
+////		if Recognizer.state == .began {
+////		tappedHeavy()
+////		tableView.isEditing = !tableView.isEditing
+////	} else if
+////		Recognizer.state == .ended{
+//		//tappedRigid()
+//		UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+//			if success {
+//				self.notificationTest("Title", "проверка пуш", dateDate)
+//			}else if error != nil {
+//				print ("error occured")
+//			}
+//		}
+//
+//}
+//
+//	func notificationTest(_ title: String, _ body: String, _ date: Date){
+//		let content = UNMutableNotificationContent()
+//		content.title = title
+//		content.sound = .default
+//		content.body = body
+//
+////		let targetDate = Date().addingTimeInterval(10)
+//		let trigger = UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date),
+//																								repeats: false)
+//		let request = UNNotificationRequest(identifier: "123", content: content, trigger: trigger)
+//		UNUserNotificationCenter.current().add(request) { error in
+//			if error != nil {
+//				print("som went wrong")
+//			}
+//		}
+     }
+
 	
 	
-	@objc func edit(Recognizer: UILongPressGestureRecognizer) {
-		tableView.isEditing = !tableView.isEditing
-		tappedSoft()
-//		if Recognizer.state == .began {
-//		tappedHeavy()
-//		tableView.isEditing = !tableView.isEditing
-//	} else if
-//		Recognizer.state == .ended{
-		//tappedRigid()
-}
+	
+	
 	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
 		return .delete
 	}

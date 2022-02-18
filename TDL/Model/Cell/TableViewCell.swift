@@ -6,11 +6,11 @@
 //
 
 import UIKit
-
+var dateDate = Date().addingTimeInterval(3)
 
 class TableViewCell: UITableViewCell {
 	static let identifier = "TableViewCell"
-	var dateDate = Date()
+	
 
 	let backgroundViewCell: UIView = {
 		let view = UIView()
@@ -31,22 +31,15 @@ class TableViewCell: UITableViewCell {
 		return labelTitle
 	}()
 	
-	var buttonCell = UIButton()
-	
-	func buttonCellSet(){
-		buttonCell = UIButton(type: .system)
-		if checkmark == true {
-			buttonCell.setImage(UIImage(systemName: "tarsh"), for: .normal)
-		}else{
-//			buttonCell.setImage(UIImage(systemName: "checkmark"), for: .normal)
-		}
-		//button.frame = CGRect(x:0, y:0, width: 50, height: 50)
-		buttonCell.layer.cornerRadius = 10
-		buttonCell.backgroundColor = UIColor(named: "BGColor")
-		buttonCell.translatesAutoresizingMaskIntoConstraints = false
-		print("end")
-	}
-	
+ 
+	let buttonCell: UIButton = {
+	let buttonCell = UIButton(type: .system)
+	buttonCell.layer.cornerRadius = 10
+	buttonCell.translatesAutoresizingMaskIntoConstraints = false
+
+  return buttonCell
+	}()
+
 
 	
 	let taskTime: UILabel = {
@@ -82,24 +75,22 @@ class TableViewCell: UITableViewCell {
 	
 	override init(style:UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
+		
+		
+		
+		
+		
+		
 		contentView.backgroundColor = .clear
-		buttonCellSet()
 		setConstraintsCell()
 		self.selectionStyle = .none
   	self.backgroundColor = .clear
+		
 	}
 	required init?(coder: NSCoder) {
 		fatalError("init(coder:) has not been implemented")
 	}
 	
-	
-	
-	func notificationEdit(){
-		NotificationCenter.default.addObserver(self, selector: #selector(checkNat), name: Notification.Name("checkmark"), object: .none)
-	}
-	@objc func checkNat(notificationEdit: NSNotification){
-		buttonCellSet()
-	}
 	
 	
 	
