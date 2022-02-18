@@ -279,7 +279,7 @@ class ViewController: UIViewController {
 		let rightButton = UIBarButtonItem(image: UIImage(systemName: "bell"),
 																			style: .plain,
 																			target: self,
-																			action: #selector(pushNotification))
+																			action: #selector(showHeightButtonTapped))
 		self.navigationItem.rightBarButtonItem = rightButton
 	}
 	
@@ -371,13 +371,20 @@ class ViewController: UIViewController {
 	}
 	
 	
+	
+	
+	
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+		
+		let areYouSureAllert = UIAlertController(title: "Delete task", message: nil, preferredStyle: .actionSheet)
+		let yesAction = UIAlertAction(title: "Delete", style: .destructive){
+			[self] action in
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		let index = indexPath.row
-		
 		context.delete(tasksModels[index] as NSManagedObject)
 		tasksModels.remove(at: index)
+			self.tableView.deleteRows(at: [indexPath], with: .left)
 		
 		let _ : NSError! = nil
 		do {
@@ -387,6 +394,20 @@ class ViewController: UIViewController {
 			print("error : \(error)")
 		}
 	}
+	
+		
+		
+		let noAction = UIAlertAction(title: "Cancel", style: .cancel) { action in
+		}
+		areYouSureAllert.addAction(yesAction)
+		areYouSureAllert.addAction(noAction)
+		
+		present(areYouSureAllert, animated: true)
+	
+	}
+	
+	
+	
 	
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -459,49 +480,22 @@ class ViewController: UIViewController {
 	}
 	
 	
-	
-	//MARK: USER PUSH NOTIFICATION
-	
-	@objc func pushNotification() {
-////		tableView.isEditing = !tableView.isEditing
-////		tappedSoft()
-////		if Recognizer.state == .began {
-////		tappedHeavy()
-////		tableView.isEditing = !tableView.isEditing
-////	} else if
-////		Recognizer.state == .ended{
-//		//tappedRigid()
-//		UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-//			if success {
-//				self.notificationTest("Title", "проверка пуш", dateDate)
-//			}else if error != nil {
-//				print ("error occured")
-//			}
+//	@objc func allertSure() {
+//		let areYouSureAllert = UIAlertController(title: "Delete all folders", message: nil, preferredStyle: .actionSheet)
+//		let yesAction = UIAlertAction(title: "Delete", style: .destructive) { [self] action in
+//
+//			tableView.reloadData()
 //		}
 //
-//}
-//
-//	func notificationTest(_ title: String, _ body: String, _ date: Date){
-//		let content = UNMutableNotificationContent()
-//		content.title = title
-//		content.sound = .default
-//		content.body = body
-//
-////		let targetDate = Date().addingTimeInterval(10)
-//		let trigger = UNCalendarNotificationTrigger(dateMatching: Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date),
-//																								repeats: false)
-//		let request = UNNotificationRequest(identifier: "123", content: content, trigger: trigger)
-//		UNUserNotificationCenter.current().add(request) { error in
-//			if error != nil {
-//				print("som went wrong")
-//			}
+//		let noAction = UIAlertAction(title: "Cancel", style: .cancel) { action in
 //		}
-     }
-
+//		areYouSureAllert.addAction(yesAction)
+//		areYouSureAllert.addAction(noAction)
+//
+//		present(areYouSureAllert, animated: true)
+//	}
 	
-	
-	
-	
+		
 	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
 		return .delete
 	}

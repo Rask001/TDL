@@ -65,24 +65,24 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 	}
 	
 	func pickerSetup() {
-		//let dateNow = Date()
+		let dateNow = Date()
 //		let dateComponentsNow = dataPicker.calendar.dateComponents([.month, .day, .hour, .minute], from: dateNow)
 //		let dateFormatter = DateFormatter()
 //		dateFormatter.locale = Locale(identifier: "ru_RU")
 //		dateFormatter.dateFormat = "MMM d, HH:mm"
 //		let formatDate = dateFormatter.string(from: dateNow)
 //
-		dataPicker.date = newDate
-		//dataPicker.minimumDate = dateNow
-		dataPicker.timeZone = .autoupdatingCurrent
+		self.dataPicker.minimumDate = dateNow
+		self.dataPicker.timeZone = .autoupdatingCurrent
 		self.dataPicker.frame = CGRect(x: self.view.bounds.width/2 - 210, y: 300, width: 300, height: 50)
+		self.dataPicker.date = dateNow
 		self.view.addSubview(dataPicker)
-		dataPicker.addTarget(self, action: #selector(dataPickerChange(paramDataPicker:)), for: .valueChanged)
-		
+		self.dataPicker.addTarget(self, action: #selector(dataPickerChange(paramDataPicker:)), for: .valueChanged)
+		//dataPicker.date = newDate
 	}
 	
 	@objc func dataPickerChange(paramDataPicker:UIDatePicker) {
-		if paramDataPicker.isEqual(self.dataPicker) {
+		//if paramDataPicker.isEqual(self.dataPicker) {
 			let dateFromDP = paramDataPicker.date
 //			let dateComponentsChange = dataPicker.calendar.dateComponents([.month, .day, .hour, .minute], from: dateFromDP)
 			let dateFormatter = DateFormatter()
@@ -92,7 +92,7 @@ class NewListEditing: UIViewController, UITextFieldDelegate {
 			newDate = dateFromDP
 			dateFromDatePicker = formatDate
 		print(dateFromDatePicker)
-		}
+		
 	}
 	
 	//navigationBarSetup
