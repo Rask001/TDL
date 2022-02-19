@@ -9,7 +9,6 @@ import UIKit
 import CoreData
 import FSCalendar
 
-
 var menuOpen = false
 var checkmark = false
 var textTaskFromTF = ""
@@ -531,6 +530,9 @@ extension ViewController: FSCalendarDataSource, FSCalendarDelegate, UITableViewD
 	}
 }
 
+func dsksksks(){
+	//dllldlldl
+}
 //MARK: Commention Func
 
 //	func interactivePopGestureRecognizer(){ //распознователь жестов
