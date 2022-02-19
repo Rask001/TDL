@@ -9,13 +9,28 @@ import UIKit
 
 class SecondVC: UIViewController {
 	let navigationBar = UINavigationBar()
-	let leftButton = UIBarButtonItem(title: "delete", style: .plain, target: self, action: #selector(deleteAll))
-	let rightButton = UIBarButtonItem(title: "setting", style: .plain, target: self, action: #selector(editFolders))
-	//(title: "delete", style: .plain, target: self, action: #selector(deleteAll))
+	let settingsViewController = SettingsViewController()
+//	let leftButton = UIBarButtonItem(title: "delete", style: .plain, target: self, action: #selector(deleteAll))
+//	let rightButton = UIBarButtonItem(title: "setting", style: .plain, target: self, action: #selector(editFolders))
+	let button = UIButton(type: .system)
+	
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		otherSetup()
-		navigationBarSetup()
+	 // navigationBarSetup()
+		setupButton()
+	}
+	
+	func setupButton(){
+		button.frame = CGRect(x: self.view.bounds.width/2 - 60, y: 500, width: 120, height: 40)
+		button.addTarget(self, action: #selector(editFolders), for: .touchUpInside)
+		button.backgroundColor = .black
+		button.setTitle("setting", for: .normal)
+		button.setTitleColor(.white, for: .normal)
+		button.setTitleColor(.secondarySystemBackground, for: .selected)
+		button.layer.cornerRadius = 10
+		self.view.addSubview(button)
 	}
 	
 	
@@ -23,15 +38,16 @@ class SecondVC: UIViewController {
 		print("hello")
 	}
 	
-	@objc func editFolders () {
-		
+	@objc func editFolders() {
+		print("ширина вью: \(view.bounds.width), высота: \(view.bounds.height)")
+		self.present(settingsViewController, animated: true, completion: nil)
 	}
 	
-	func navigationBarSetup() {
-		self.navigationItem.leftBarButtonItem = leftButton
-		self.navigationItem.rightBarButtonItem = rightButton
-		self.navigationItem.title = "In development"
-	}
+//	func navigationBarSetup() {
+//		self.navigationItem.leftBarButtonItem = leftButton
+//		self.navigationItem.rightBarButtonItem = rightButton
+//		self.navigationItem.title = "In development"
+//	}
 	
 	
 	

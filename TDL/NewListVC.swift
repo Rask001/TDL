@@ -37,6 +37,7 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 		pickerSetup()
 		switchAlertSetup()
 		switchAlertRepeatSetup()
+		setConstraits()
 	}
 	
 	
@@ -48,12 +49,13 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 //		dateFormatter.locale = Locale(identifier: "ru_RU")
 //		dateFormatter.dateFormat = "MMM d, HH:mm"
 //		let formatDate = dateFormatter.string(from: dateNow)
-		dataPicker.isEnabled = false
-		dataPicker.minimumDate = dateNow
-		dataPicker.timeZone = .autoupdatingCurrent
+		self.dataPicker.isEnabled = false
+		self.dataPicker.minimumDate = dateNow
+		self.dataPicker.timeZone = .autoupdatingCurrent
+		self.dataPicker.translatesAutoresizingMaskIntoConstraints = false
 		self.dataPicker.frame = CGRect(x: self.view.bounds.width/2 - 210, y: 200, width: 300, height: 50)
+		self.dataPicker.addTarget(self, action: #selector(dataPickerChange(paramDataPicker:)), for: .valueChanged)
 		self.view.addSubview(dataPicker)
-		dataPicker.addTarget(self, action: #selector(dataPickerChange(paramDataPicker:)), for: .valueChanged)
 		
 	}
 	
@@ -73,24 +75,26 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 	
 	
 	func switchAlertSetup(){
-		switchAlert.frame = CGRect(x: 30, y: 210, width: 0, height: 0)
+		//switchAlert.frame = CGRect(x: 30, y: 210, width: 0, height: 0)
 		switchAlert.isOn = false
 		switchAlert.addTarget(self, action: #selector(reminder), for: .valueChanged)
+		switchAlert.translatesAutoresizingMaskIntoConstraints = false
 		self.view.addSubview(switchAlert)
 	}
 	
 	func switchAlertRepeatSetup(){
-		switchAlertRepeat.frame = CGRect(x: 30, y: 260, width: 0, height: 0)
+		//switchAlertRepeat.frame = CGRect(x: 30, y: 260, width: 0, height: 0)
 		switchAlertRepeat.isOn = false
+		switchAlertRepeat.translatesAutoresizingMaskIntoConstraints = false
 		switchAlertRepeat.addTarget(self, action: #selector(repeatReminder), for: .valueChanged)
 		self.view.addSubview(switchAlertRepeat)
 	}
 	
 	@objc func reminder(){
 		if switchAlert.isOn == true {
-			dataPicker.isEnabled = true
+			self.dataPicker.isEnabled = true
 		}else{
-			dataPicker.isEnabled = false
+			self.dataPicker.isEnabled = false
 		}
 	}
 	
@@ -102,8 +106,9 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 		self.textField.delegate = self
 		//		self.textField.becomeFirstResponder()
 		self.textField.frame = CGRect(x: self.view.bounds.size.width/2 - 150, y: 80, width: 300, height: 31)
-		self.textField.placeholder = "craete new task"
-		self.textField.borderStyle = UITextField.BorderStyle.roundedRect
+		self.textField.layer.cornerRadius = 5
+		self.textField.placeholder = " craete new task"
+		self.textField.borderStyle = UITextField.BorderStyle.none
 		self.textField.backgroundColor = UIColor(named: "BWTrue")
 		self.view.addSubview(self.textField)
 	}
@@ -120,10 +125,10 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 	//navigationBarSetup
 	func navigationBarSetup() {
 		self.navigationBar.frame = CGRect(x: 0, y: 0, width: Int(self.view.bounds.size.width), height: 44)
-		self.navigationBar.backgroundColor = .lightGray
+		self.navigationBar.barTintColor = .secondarySystemBackground
 		self.navigationBar.prefersLargeTitles = true
-		self.navigationBar.shadowImage = nil
-		let navigationItem = UINavigationItem(title: "Create list")
+		self.navigationBar.shadowImage = .none
+		let navigationItem = UINavigationItem(title: "Create task")
 		navigationItem.leftBarButtonItem = leftButton
 		navigationItem.rightBarButtonItem = rightButton
 		self.navigationBar.items = [navigationItem]
@@ -160,4 +165,28 @@ extension NewListVC: UIPickerViewDataSource {
 	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
 		return 10
 	}
+	
+	
+	func setConstraits() {
+	
+		NSLayoutConstraint.activate([
+			switchAlert.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
+			//switchAlert.trailingAnchor.constraint(equalTo: self.dataPicker.leadingAnchor, constant: -20),
+			switchAlert.centerYAnchor.constraint(equalTo: self.dataPicker.centerYAnchor)
+		])
+		
+		NSLayoutConstraint.activate([
+			self.dataPicker.leadingAnchor.constraint(equalTo: switchAlert.trailingAnchor, constant: 20),
+			self.dataPicker.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
+			self.dataPicker.topAnchor.constraint(equalTo: self.textField.bottomAnchor, constant: 130)
+		])
+		
+		NSLayoutConstraint.activate([
+			switchAlertRepeat.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
+			//switchAlertRepeat.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
+			switchAlertRepeat.topAnchor.constraint(equalTo: switchAlert.bottomAnchor, constant: 30)
+		])
+	}
+	
+	
 }
