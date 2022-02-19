@@ -8,11 +8,10 @@ import SideMenu
 import UIKit
 import CoreData
 import FSCalendar
-//import UserNotifications
+
 
 var menuOpen = false
 var checkmark = false
-var indexOfCheck = Int()
 var textTaskFromTF = ""
 var dateFromDatePicker = ""
 var newDate = Date()
@@ -79,9 +78,6 @@ class ViewController: UIViewController {
 	}
 	
 
-	
-
-
 	//MARK: - NEW TASK
 	@objc func goToNewList(){
 			self.present(newList, animated: true, completion: nil)
@@ -98,6 +94,8 @@ class ViewController: UIViewController {
 									withCheck: checkmark)
 		tableView.reloadData()
 	}
+	
+	
 	func saveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
@@ -107,8 +105,6 @@ class ViewController: UIViewController {
 		model.timeLabel = time
 		model.timeLabelDate = newDate
 		model.check = false
-		//model.tag = "tag_\(title)"
-		print (newDate)
 		
 		do{
 			try context.save()
@@ -155,23 +151,12 @@ class ViewController: UIViewController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
 	//MARK: - FUNC
 	@objc func didTapMenu() {
 		menuOpen == false ?
 		present(leftMenuNC!, animated: true) :
 		leftMenuNC!.dismiss(animated: true, completion: nil)
 	}
-//	func longPress(){
-//	let longpress = UILongPressGestureRecognizer(target: self, action: #selector(edit))
-//		longpress.minimumPressDuration = 0.4
-//	tableView.addGestureRecognizer(longpress)
-//	}
 	
 	func swipesObservers() {
 		let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes))
@@ -204,11 +189,6 @@ class ViewController: UIViewController {
 		}
 	}
 	
-	func tapObservers() {
-		let singleTap = UITapGestureRecognizer(target: self, action: #selector(singleTapAction))
-		singleTap.numberOfTapsRequired = 1
-		self.view.addGestureRecognizer(singleTap)
-	}
 	
 	
 	@objc func tappedSoft() {
@@ -221,13 +201,7 @@ class ViewController: UIViewController {
 		generator.impactOccurred()
 	}
 	
-	@objc func singleTapAction(){
-		print("koko yopta")
-//		if menuOpen {
-//			didTapMenu()
-//			tappedSoft()
-//		}
-	}
+	
 	
 	@objc func handleSwipes(gester: UISwipeGestureRecognizer){
 		switch gester.direction {
@@ -304,9 +278,7 @@ class ViewController: UIViewController {
 	
 	
 	
-//	func interactivePopGestureRecognizer(){ //распознователь жестов
-//	navigationController?.interactivePopGestureRecognizer?.isEnabled = true
-//	}
+
 	
 	
 	//setupOther
@@ -358,8 +330,6 @@ class ViewController: UIViewController {
 		//tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
 		let task = tasksModels[indexPath.row]
 		let text = task.text
-
-
 		indexP = indexPath.row
 		oldCellName = text
 		goToNewListEditing()
@@ -384,8 +354,6 @@ class ViewController: UIViewController {
 		editButton2.image = UIImage.init(systemName: "star")
 	  editButton2.backgroundColor = UIColor.green
 	
-	
-     
 		return UISwipeActionsConfiguration(actions: [editButton, editButton2])
 	}
 	
@@ -429,9 +397,6 @@ class ViewController: UIViewController {
 	}
 
 	
-	
-	
-	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return tasksModels.count
 	}
@@ -449,28 +414,21 @@ class ViewController: UIViewController {
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as! TableViewCell
-		//let button = TableViewCell()
 		let task = tasksModels[indexPath.row]
+		let button = cell.buttonCell
 		cell.taskTitle.text = task.text
 		cell.taskTime.text = task.timeLabel
-		cell.buttonCell.tag = indexPath.row
+		button.tag = indexPath.row
 		
 		if task.check == false {
-			cell.buttonCell.backgroundColor = UIColor(named: "BGColor")
-			cell.buttonCell.setImage(nil, for: .normal)
+			button.backgroundColor = UIColor(named: "BGColor")
+			button.setImage(nil, for: .normal)
 		}else{
-			cell.buttonCell.backgroundColor = UIColor.white
-			cell.buttonCell.setImage(UIImage.init(systemName: "checkmark"), for: .normal)
+			button.backgroundColor = UIColor.white
+			button.setImage(UIImage.init(systemName: "checkmark"), for: .normal)
 		}
-		
-	
-		
-		let buttonCellqq = cell.buttonCell
-		
-		buttonCellqq.addTarget(self, action: #selector(saveCheckmark(sender:)), for: .touchUpInside)
-	
-		
-	  return cell
+		button.addTarget(self, action: #selector(saveCheckmark(sender:)), for: .touchUpInside)
+		return cell
 	}
 	
 	
@@ -482,7 +440,7 @@ class ViewController: UIViewController {
 		let context = appDelegate.persistentContainer.viewContext
 		let model = tasksModels[sender.tag]
 		if checkmark == model.check{
-		model.check = !checkmark
+			model.check = !checkmark
 		}else{
 			model.check = checkmark
 		}
@@ -490,9 +448,8 @@ class ViewController: UIViewController {
 			try context.save()
 		} catch let error as NSError {
 			print(error.localizedDescription)
-	}
-			tableView.reloadData()
-		print("\(model.text), \(model.check)")
+		}
+		tableView.reloadData()
 	}
 	
 
@@ -561,7 +518,6 @@ extension ViewController {
 		NSLayoutConstraint.activate([
 		])
 	}
-	//buttonNewTask.topAnchor,
 }
 //MARK: - EXTENTION
 extension ViewController: FSCalendarDataSource, FSCalendarDelegate, UITableViewDelegate, UITableViewDataSource {
@@ -575,4 +531,29 @@ extension ViewController: FSCalendarDataSource, FSCalendarDelegate, UITableViewD
 	}
 }
 
+//MARK: Commention Func
 
+//	func interactivePopGestureRecognizer(){ //распознователь жестов
+//	navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+//	}
+
+
+//	func longPress(){
+//	let longpress = UILongPressGestureRecognizer(target: self, action: #selector(edit))
+//		longpress.minimumPressDuration = 0.4
+//	tableView.addGestureRecognizer(longpress)
+//	}
+
+
+//	func tapObservers() {
+//		let singleTap = UITapGestureRecognizer(target: self, action: #selector(singleTapAction))
+//		singleTap.numberOfTapsRequired = 1
+//		self.view.addGestureRecognizer(singleTap)
+//	}
+
+//	@objc func singleTapAction(){
+//		print("koko yopta")
+//		if menuOpen {
+//			didTapMenu()
+//			tappedSoft()
+//		}
