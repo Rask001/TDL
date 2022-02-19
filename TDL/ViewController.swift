@@ -95,11 +95,10 @@ class ViewController: UIViewController {
 		self.saveTask(withTitle: textTaskFromTF,
 									withTime: dateFromDatePicker,
 									withDate: newDate,
-									withCheck: checkmark,
-									withIndex: Int16(indexOfCheck))
+									withCheck: checkmark)
 		tableView.reloadData()
 	}
-	func saveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool, withIndex index: Int16) {
+	func saveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		guard let entity = NSEntityDescription.entity(forEntityName: "Tasks", in: context) else {return}
@@ -108,7 +107,7 @@ class ViewController: UIViewController {
 		model.timeLabel = time
 		model.timeLabelDate = newDate
 		model.check = false
-		model.numberOfCheck = Int16(tasksModels.count + 1)
+		//model.tag = "tag_\(title)"
 		print (newDate)
 		
 		do{
@@ -421,21 +420,14 @@ class ViewController: UIViewController {
 			print("error : \(error)")
 		}
 	}
-	
-		
-		
+
 		let noAction = UIAlertAction(title: "Cancel", style: .cancel) { action in
 		}
 		areYouSureAllert.addAction(yesAction)
 		areYouSureAllert.addAction(noAction)
-		
 		present(areYouSureAllert, animated: true)
-	
 	}
-	
-//	func removePendingNotificationRequests(withIdentifiers identifiers: [String]){
-//
-//	}
+
 	
 	
 	
@@ -457,23 +449,25 @@ class ViewController: UIViewController {
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as! TableViewCell
-		
+		//let button = TableViewCell()
 		let task = tasksModels[indexPath.row]
 		cell.taskTitle.text = task.text
 		cell.taskTime.text = task.timeLabel
+		cell.buttonCell.tag = indexPath.row
 		
 		if task.check == false {
 			cell.buttonCell.backgroundColor = UIColor(named: "BGColor")
+			cell.buttonCell.setImage(nil, for: .normal)
 		}else{
 			cell.buttonCell.backgroundColor = UIColor.white
+			cell.buttonCell.setImage(UIImage.init(systemName: "checkmark"), for: .normal)
 		}
 		
 	
 		
 		let buttonCellqq = cell.buttonCell
 		
-		buttonCellqq.addTarget(self, action: #selector(printy(sender:)), for: .touchUpInside)
-    print(indexPath.row)
+		buttonCellqq.addTarget(self, action: #selector(saveCheckmark(sender:)), for: .touchUpInside)
 	
 		
 	  return cell
@@ -481,25 +475,17 @@ class ViewController: UIViewController {
 	
 	
 	
-	
-	
-	
-	
-	
-	@objc func printy(sender: UIButton) {
-	
-		if checkmark == false {
-			checkmark = true
-		} else {
-			checkmark = false
-		}
-	
-		print("22\(checkmark)")
+
+	@objc func saveCheckmark(sender: UIButton) {
+		
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
-		let model = tasksModels[0]
-		
-		model.check = checkmark
+		let model = tasksModels[sender.tag]
+		if checkmark == model.check{
+		model.check = !checkmark
+		}else{
+			model.check = checkmark
+		}
 		do {
 			try context.save()
 		} catch let error as NSError {

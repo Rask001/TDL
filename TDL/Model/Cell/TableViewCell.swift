@@ -36,7 +36,7 @@ class TableViewCell: UITableViewCell {
 	let buttonCell = UIButton(type: .system)
 	buttonCell.layer.cornerRadius = 10
 	buttonCell.translatesAutoresizingMaskIntoConstraints = false
-
+	
   return buttonCell
 	}()
 
@@ -75,12 +75,6 @@ class TableViewCell: UITableViewCell {
 	
 	override init(style:UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
-		
-		
-		
-		
-		
-		
 		contentView.backgroundColor = .clear
 		setConstraintsCell()
 		self.selectionStyle = .none
