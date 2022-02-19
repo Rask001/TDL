@@ -7,10 +7,21 @@
 import SideMenu
 import UIKit
 import CoreData
+import FSCalendar
+//import UserNotifications
 
 var menuOpen = false
-
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+var checkmark = false
+var indexOfCheck = Int()
+var textTaskFromTF = ""
+var dateFromDatePicker = ""
+var newDate = Date()
+var oldDate = Date()
+var newCellName = ""
+var oldCellName = ""
+var switchAlert = UISwitch()
+var switchAlertRepeat = UISwitch()
+class ViewController: UIViewController {
 	
 	
 	//MARK: - Properties
@@ -22,23 +33,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	let indentifire = "Cell"
 	let buttonNewTask = UIButton(type: .system)
 	var indexP = 0
+	let calendar = FSCalendar ()
+	var calendarHeightConstraint : NSLayoutConstraint!
 	
-	
-	
-	//MARK: - viewDidLoad
-	override func viewDidLoad() {
-		super.viewDidLoad()
-		setupSideMenu()
-  	setupNavigationItems()
-		setupOther()
-		swipesObservers()
-		setupTable()
-		setupButton()
-		notification()
-		notificationEdit()
-		
-		//tapObservers()
-	}
+	let showHeightButton = UIButton()
+
 	
 	//MARK: - viewWillAppear
 	override func viewWillAppear(_ animated: Bool) {
@@ -52,6 +51,35 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		}
 	}
 	
+	
+	//MARK: - viewDidAppear
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		animateTableView()
+	}
+	
+	
+	//MARK: - viewDidLoad
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		setupSideMenu()
+  	setupNavigationItems()
+		calendarSetup()
+		showHeightButtonSetup()
+		setupOther()
+		swipesObservers()
+		swipeCalendar()
+		setupButton()
+		setupTable()
+		notification()
+		notificationEdit()
+		setConstraits()
+		//longPress()
+		//tapObservers()
+	}
+	
+
+	
 
 
 	//MARK: - NEW TASK
@@ -64,22 +92,35 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		//переносит введеный текст из newListVC в viewContrioller
 	}
 	@objc func addNewTask(notification: NSNotification){
-		self.saveTask(withTitle: textTaskFromTF)
+		self.saveTask(withTitle: textTaskFromTF,
+									withTime: dateFromDatePicker,
+									withDate: newDate,
+									withCheck: checkmark,
+									withIndex: Int16(indexOfCheck))
 		tableView.reloadData()
 	}
-	func saveTask(withTitle title: String) {
+	func saveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool, withIndex index: Int16) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		guard let entity = NSEntityDescription.entity(forEntityName: "Tasks", in: context) else {return}
 		let model = Tasks(entity: entity, insertInto: context)
 		model.text = title
+		model.timeLabel = time
+		model.timeLabelDate = newDate
+		model.check = false
+		model.numberOfCheck = Int16(tasksModels.count + 1)
+		print (newDate)
+		
 		do{
 			try context.save()
 			tasksModels.append(model)
 		} catch let error as NSError {
 			print(error.localizedDescription)
-		}
+    }
+		
+		sendReminderNotification("Напоминание \(time)", title, newDate)
 	}
+
 	
 	
 	
@@ -87,24 +128,31 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	@objc func goToNewListEditing(){
 			self.present(newListEditing, animated: true, completion: nil)
 		}
+	
 	func notificationEdit(){
 		NotificationCenter.default.addObserver(self, selector: #selector(editTask), name: Notification.Name("Edit"), object: .none)
 	}
 	@objc func editTask(notificationEdit: NSNotification){
-		self.editAndSaveTask(withTitle: newCellName)
+		self.editAndSaveTask(withTitle: newCellName, withTime: dateFromDatePicker, withDate: newDate, withCheck: checkmark)
 		tableView.reloadData()
+		print("проверка")
 	}
-	func editAndSaveTask(withTitle title: String) {
+	func editAndSaveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		let model = tasksModels[indexP]
 		let title = newCellName
 		model.text = title
+		model.timeLabel = time
+		model.timeLabelDate = date
+		model.check = false
+
 		do {
 			try context.save()
 		} catch let error as NSError {
 			print(error.localizedDescription)
 		}
+		sendReminderNotification("Напоминание \(time)", title, date)
 	}
 	
 	
@@ -120,11 +168,41 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		present(leftMenuNC!, animated: true) :
 		leftMenuNC!.dismiss(animated: true, completion: nil)
 	}
+//	func longPress(){
+//	let longpress = UILongPressGestureRecognizer(target: self, action: #selector(edit))
+//		longpress.minimumPressDuration = 0.4
+//	tableView.addGestureRecognizer(longpress)
+//	}
 	
 	func swipesObservers() {
 		let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes))
 		swipeLeft.direction = .left
 		self.view.addGestureRecognizer(swipeLeft)
+	}
+	
+	func swipeCalendar() {
+		let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipesCalendar))
+		swipeUp.direction = .up
+		self.calendar.addGestureRecognizer(swipeUp)
+		
+		let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipesCalendar))
+		swipeDown.direction = .down
+		self.calendar.addGestureRecognizer(swipeDown)
+	}
+	
+	@objc func handleSwipesCalendar(gesture: UISwipeGestureRecognizer) {
+		switch gesture.direction {
+		case .up:
+			if calendar.scope == .month {
+				showHeightButtonTapped()
+			}
+		case .down:
+			if calendar.scope == .week{
+			showHeightButtonTapped()
+			}
+		default:
+			break
+		}
 	}
 	
 	func tapObservers() {
@@ -133,16 +211,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		self.view.addGestureRecognizer(singleTap)
 	}
 	
+	
 	@objc func tappedSoft() {
 		let generator = UIImpactFeedbackGenerator(style: .soft)
 		generator.impactOccurred()
 	}
 	
+	@objc func tappedRigid() {
+		let generator = UIImpactFeedbackGenerator(style: .rigid)
+		generator.impactOccurred()
+	}
+	
 	@objc func singleTapAction(){
-		if menuOpen {
-			didTapMenu()
-			tappedSoft()
-		}
+		print("koko yopta")
+//		if menuOpen {
+//			didTapMenu()
+//			tappedSoft()
+//		}
 	}
 	
 	@objc func handleSwipes(gester: UISwipeGestureRecognizer){
@@ -160,24 +245,33 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		}
 	}
 	
-
+	func calendarSetup(){
+		self.calendar.translatesAutoresizingMaskIntoConstraints = false
+		self.calendar.dataSource = self
+		self.calendar.delegate = self
+		self.calendar.scope = .week
+	}
 	
-	
-	
-	
-	
+	func showHeightButtonSetup() {
+		self.showHeightButton.addTarget(self, action: #selector(showHeightButtonTapped), for: .touchUpInside)
+		self.showHeightButton.setTitle("Open calendar", for: .normal)
+		self.showHeightButton.setTitleColor(UIColor.gray, for: .normal)
+		self.showHeightButton.titleLabel?.font = UIFont(name: "Avenir Next Demi Bold", size: 14)
+		self.showHeightButton.translatesAutoresizingMaskIntoConstraints = false
+	} 
 
 	//MARK: - SETUP
 	
 	func setupButton(){
-		self.buttonNewTask.frame = CGRect(x: self.view.bounds.width/2 - 50, y: 650, width: 100, height: 50)
-		self.buttonNewTask.backgroundColor = UIColor(named: "WhiteBlack")
-		self.buttonNewTask.titleLabel?.font = UIFont(name: "Futura", size: 17)
+		self.buttonNewTask.frame = CGRect(x: self.view.bounds.width/2 - 50, y: 670, width: 100, height: 50)
+		self.buttonNewTask.backgroundColor = UIColor(named: "BlackWhite")
+		self.buttonNewTask.titleLabel?.font = UIFont(name: "Avenir Next", size: 17)
 		self.buttonNewTask.setTitle("New task", for: .normal)
-		self.buttonNewTask.setTitleColor(UIColor (red: 50/255, green: 50/255, blue: 50/255, alpha: 1), for: .normal)
+		self.buttonNewTask.setTitleColor(UIColor.white, for: .normal)
 		self.buttonNewTask.layer.cornerRadius = 20
 		self.buttonNewTask.addTarget(self, action: #selector(goToNewList), for: .touchUpInside)
-		view.addSubview(self.buttonNewTask)
+		//self.buttonNewTask.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -50).isActive = true
+		tableView.addSubview(buttonNewTask)
 	}
 	
 	
@@ -202,10 +296,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 																														style: .plain,
 																														target: self,
 																														action: #selector(didTapMenu))
-		let rightButton = UIBarButtonItem(image: UIImage(systemName: "gear"),
+		let rightButton = UIBarButtonItem(image: UIImage(systemName: "bell"),
 																			style: .plain,
 																			target: self,
-																			action: #selector(edit))
+																			action: #selector(showHeightButtonTapped))
 		self.navigationItem.rightBarButtonItem = rightButton
 	}
 	
@@ -220,9 +314,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	private func setupOther(){
 		self.view.backgroundColor = UIColor(named: "BGColor")
 		let tabBarItem = UITabBarItem(title: nil,
-															image: UIImage(systemName: "checkmark.seal")?.withAlignmentRectInsets(.init(top: 10, left: 0, bottom: 0, right: 0)),
-															tag: 0)
+																	image: UIImage(systemName: "checkmark.seal")?.withAlignmentRectInsets(.init(top: 10, left: 0, bottom: 0, right: 0)),
+																	tag: 0)
 		self.tabBarItem = tabBarItem
+		
+	
+		
+	}
+	
+	
+	@objc func showHeightButtonTapped(){
+		if calendar.scope == .week {
+			calendar.setScope(.month, animated: true)
+			showHeightButton.setTitle("Close calendar", for: .normal)
+		} else {
+			calendar.setScope(.week, animated: true)
+			showHeightButton.setTitle("Open calendar", for: .normal)
+		}
 	}
 	
 	
@@ -230,24 +338,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	
 	func setupTable() {
-		self.tableView = UITableView(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 650), style: .insetGrouped)
-		self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: indentifire)
+		self.tableView = UITableView()
+//		self.tableView.frame = CGRect(x: 10, y: 0, width: 0, height: 0)
+		self.tableView.register(TableViewCell.self, forCellReuseIdentifier: TableViewCell.identifier)
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
-		self.tableView.backgroundColor = UIColor(named: "BGColor")
+		self.tableView.backgroundColor = .clear//UIColor(named: "BGColor")
 		//self.tableView.isScrollEnabled = true // скроллинг
-		self.tableView.bounces = false //если много ячеек прокрутка on. по дефолту off
-		self.tableView.separatorStyle = .singleLine
+		self.tableView.bounces = true //если много ячеек прокрутка on. по дефолту off
 		self.tableView.separatorStyle = .none
 		self.tableView.rowHeight = 60
-		view.addSubview(tableView)
+		self.tableView.translatesAutoresizingMaskIntoConstraints = false
+		//view.addSubview(tableView)
 	}
+	
+
 	
 	
 	func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
-		let cell = self.tableView.cellForRow(at: indexPath)
-		let text = cell!.textLabel!.text!
+		//tableView.deselectRow(at: indexPath, animated: true) //Затухание выбора ячейки
+		let task = tasksModels[indexPath.row]
+		let text = task.text
+
+
 		indexP = indexPath.row
 		oldCellName = text
 		goToNewListEditing()
@@ -257,8 +370,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 		
 		let editButton = UIContextualAction(style: .normal, title: "") { action, view, completion in
-			let cell = self.tableView.cellForRow(at: indexPath)
-			let text = cell!.textLabel!.text!
+			let task = self.tasksModels[indexPath.row]
+			let text = task.text
+			oldDate = task.timeLabelDate!
 			self.indexP = indexPath.row
 			oldCellName = text
 			self.goToNewListEditing()
@@ -276,27 +390,54 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		return UISwipeActionsConfiguration(actions: [editButton, editButton2])
 	}
 	
-	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-		return .delete
-	}
 	
+	
+	//MARK: Delete Cell
 	
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+		tappedRigid()
+		let task = tasksModels[indexPath.row]
+		let nameCell = task.text
+		let areYouSureAllert = UIAlertController(title: "Delete '\(nameCell)'?", message: nil, preferredStyle: .actionSheet)
+		let yesAction = UIAlertAction(title: "Delete", style: .destructive){
+			[self] action in
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		let index = indexPath.row
-		
+			
+		UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["id_\(nameCell)"])
+			
 		context.delete(tasksModels[index] as NSManagedObject)
 		tasksModels.remove(at: index)
 		
 		let _ : NSError! = nil
 		do {
+			self.tableView.deleteRows(at: [indexPath], with: .left)
+			
+			
 			try context.save()
 			self.tableView.reloadData()
 		} catch {
 			print("error : \(error)")
 		}
 	}
+	
+		
+		
+		let noAction = UIAlertAction(title: "Cancel", style: .cancel) { action in
+		}
+		areYouSureAllert.addAction(yesAction)
+		areYouSureAllert.addAction(noAction)
+		
+		present(areYouSureAllert, animated: true)
+	
+	}
+	
+//	func removePendingNotificationRequests(withIdentifiers identifiers: [String]){
+//
+//	}
+	
+	
 	
 	
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -310,29 +451,69 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 	
 	
 	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		return 50.0
+		return 60.0
 	}
 	
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: indentifire, for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as! TableViewCell
+		
 		let task = tasksModels[indexPath.row]
-		cell.textLabel?.text = task.text
-		cell.backgroundColor = UIColor(named: "WhiteBlack")
-		//cell.accessoryType = .checkmark
-		return cell
+		cell.taskTitle.text = task.text
+		cell.taskTime.text = task.timeLabel
+		
+		if task.check == false {
+			cell.buttonCell.backgroundColor = UIColor(named: "BGColor")
+		}else{
+			cell.buttonCell.backgroundColor = UIColor.white
+		}
+		
+	
+		
+		let buttonCellqq = cell.buttonCell
+		
+		buttonCellqq.addTarget(self, action: #selector(printy(sender:)), for: .touchUpInside)
+    print(indexPath.row)
+	
+		
+	  return cell
 	}
 	
 	
-	@objc func edit(Recognizer: UIBarButtonItem) {
-		tableView.isEditing = !tableView.isEditing
-		tappedSoft()
-//		if Recognizer.state == .began {
-//		tappedHeavy()
-//		tableView.isEditing = !tableView.isEditing
-//	} else if
-//		Recognizer.state == .ended{
-		//tappedRigid()
+	
+	
+	
+	
+	
+	
+	@objc func printy(sender: UIButton) {
+	
+		if checkmark == false {
+			checkmark = true
+		} else {
+			checkmark = false
+		}
+	
+		print("22\(checkmark)")
+		let appDelegate = UIApplication.shared.delegate as! AppDelegate
+		let context = appDelegate.persistentContainer.viewContext
+		let model = tasksModels[0]
+		
+		model.check = checkmark
+		do {
+			try context.save()
+		} catch let error as NSError {
+			print(error.localizedDescription)
+	}
+			tableView.reloadData()
+		print("\(model.text), \(model.check)")
+	}
+	
+
+	
+	
+	func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+		return .delete
 	}
 	
 	func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
@@ -341,5 +522,71 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 		tasksModels.insert(item, at: destinationIndexPath.row) // положили на новое место
 	}
 	
-	
+	func animateTableView(){
+		tableView.reloadData()
+		let cells = tableView.visibleCells
+		let tableViewHeight = tableView.bounds.height
+		let tableViewHeightMinus = -tableViewHeight-20
+		//- (tableViewHeight * 2)
+		var delay: Double = 0
+		for cell in cells {
+			cell.transform = CGAffineTransform(translationX: 0, y: tableViewHeightMinus)
+			
+			UIView.animate(withDuration: 0.7,
+										 delay: delay * 0.08,
+										 usingSpringWithDamping: 0.8,
+										 initialSpringVelocity: 0,
+										 options: .curveEaseInOut,
+										 animations: {
+				cell.transform = CGAffineTransform.identity
+			})
+			delay += 1
+		}
+	}
 }
+
+//MARK: - Set Constrains
+extension ViewController {
+	
+	func setConstraits() {
+		view.addSubview(calendar)
+		calendarHeightConstraint = NSLayoutConstraint(item: calendar, attribute: .height, relatedBy:  .equal, toItem: nil, attribute:  .notAnAttribute, multiplier: 1, constant: 300)
+		calendar.addConstraint(calendarHeightConstraint)
+		NSLayoutConstraint.activate([
+			calendar.topAnchor.constraint(equalTo: view.topAnchor, constant: 90),
+			calendar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
+			calendar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
+		])
+		view.addSubview(showHeightButton)
+		NSLayoutConstraint.activate([
+			showHeightButton.topAnchor.constraint(equalTo: calendar.bottomAnchor, constant: 0),
+			showHeightButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
+			showHeightButton.widthAnchor.constraint(equalToConstant: 100),
+			showHeightButton.heightAnchor.constraint(equalToConstant: 20 )
+		])
+		view.addSubview(tableView)
+		NSLayoutConstraint.activate([
+			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2),
+			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
+			tableView.topAnchor.constraint(equalTo: showHeightButton.bottomAnchor, constant: 5),
+			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5)
+		])
+		view.addSubview(buttonNewTask)
+		NSLayoutConstraint.activate([
+		])
+	}
+	//buttonNewTask.topAnchor,
+}
+//MARK: - EXTENTION
+extension ViewController: FSCalendarDataSource, FSCalendarDelegate, UITableViewDelegate, UITableViewDataSource {
+	func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
+		calendarHeightConstraint.constant = bounds.height
+		view.layoutIfNeeded()
+	}
+	
+	func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+		print(date)
+	}
+}
+
+
