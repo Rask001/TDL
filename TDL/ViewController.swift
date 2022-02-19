@@ -530,9 +530,6 @@ extension ViewController: FSCalendarDataSource, FSCalendarDelegate, UITableViewD
 	}
 }
 
-func dsksksks(){
-	//dllldlldl
-}
 //MARK: Commention Func
 
 //	func interactivePopGestureRecognizer(){ //распознователь жестов

@@ -4,5 +4,5 @@
 target 'TDL' do
   use_frameworks!
   pod 'SideMenu', '~> 6.5'
-  pod 'FSCalendar'
+  pod 'FSCalendar', '~> 2.8'
 end
