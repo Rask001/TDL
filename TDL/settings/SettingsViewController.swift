@@ -35,7 +35,7 @@ var backgroundColor = UIColor()
 			
 	
 	func setupSegmented() {
-		let items = ["background", "button"]
+		let items = ["background", "cells"]
 		segmentedControl = {
 			let segments = UISegmentedControl(items: items)
 			return segments

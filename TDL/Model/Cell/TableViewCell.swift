@@ -53,12 +53,13 @@ class TableViewCell: UITableViewCell {
 		return label
 	}()
 	
-	private let alarmImageView: UIImageView = {
+	let alarmImageView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.image = UIImage(systemName: "alarm")
 		imageView.frame = CGRect(x: 280, y: 5, width: 12, height: 12)
 		imageView.tintColor = .gray
 		imageView.contentMode = .scaleAspectFit
+//		imageView.isHidden = alarmLabelBoolGlobal
 		return imageView
 	}()
 	//318 38

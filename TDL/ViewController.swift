@@ -11,6 +11,7 @@ import FSCalendar
 
 var menuOpen = false
 var checkmark = false
+var alarmLabelBoolGlobal = false
 var textTaskFromTF = ""
 var dateFromDatePicker = ""
 var newDate = Date()
@@ -90,21 +91,24 @@ class ViewController: UIViewController {
 		self.saveTask(withTitle: textTaskFromTF,
 									withTime: dateFromDatePicker,
 									withDate: newDate,
-									withCheck: checkmark)
+									withCheck: checkmark,
+									withAlarmLabelBuul: alarmLabelBoolGlobal)
+	
 		tableView.reloadData()
 	}
 	
 	
-	func saveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool) {
+	func saveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool, withAlarmLabelBuul status: Bool) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		guard let entity = NSEntityDescription.entity(forEntityName: "Tasks", in: context) else {return}
 		let model = Tasks(entity: entity, insertInto: context)
+		//let ex = TableViewCell()
 		model.text = title
 		model.timeLabel = time
 		model.timeLabelDate = newDate
 		model.check = false
-		
+	  model.alarmLabelBool = status
 		do{
 			try context.save()
 			tasksModels.append(model)
@@ -114,7 +118,7 @@ class ViewController: UIViewController {
 		
 		sendReminderNotification("Напоминание \(time)", title, newDate)
 	}
-
+ 
 	
 	
 	
@@ -140,6 +144,7 @@ class ViewController: UIViewController {
 		model.timeLabel = time
 		model.timeLabelDate = date
 		model.check = false
+		model.alarmLabelBool = alarmLabelBoolGlobal
 
 		do {
 			try context.save()
@@ -415,9 +420,11 @@ class ViewController: UIViewController {
 		let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as! TableViewCell
 		let task = tasksModels[indexPath.row]
 		let button = cell.buttonCell
+		//let alarmImage = cell.alarmImageView
 		cell.taskTitle.text = task.text
 		cell.taskTime.text = task.timeLabel
 		button.tag = indexPath.row
+		cell.alarmImageView.isHidden = task.alarmLabelBool
 		
 		if task.check == false {
 			button.backgroundColor = UIColor(named: "BGColor")

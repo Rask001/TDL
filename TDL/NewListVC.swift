@@ -90,13 +90,23 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 		self.view.addSubview(switchAlertRepeat)
 	}
 	
+	
+	
 	@objc func reminder(){
+
+		let exemp = TableViewCell()
 		if switchAlert.isOn == true {
 			self.dataPicker.isEnabled = true
+			alarmLabelBoolGlobal = false
 		}else{
 			self.dataPicker.isEnabled = false
+      alarmLabelBoolGlobal = true
 		}
+		exemp.alarmImageView.isHidden = alarmLabelBoolGlobal
 	}
+	
+	
+	
 	
 	@objc func repeatReminder(){
 		print("тут будут повторы")
@@ -145,8 +155,10 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 	@objc func continueFunc(){
 		guard let text = textField.text, !text.isEmpty else { return }
 		textTaskFromTF = text
-		let time = dateFromDatePicker
-		dateFromDatePicker = time
+    //let time = dateFromDatePicker
+		//let exemp = TableViewCell()
+     //dateFromDatePicker = time
+		
 		NotificationCenter.default.post(name: Notification.Name("Task"), object: .none)
 		cancelFunc()
 	}
@@ -155,6 +167,8 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 	@objc func cancelFunc(){
 		dismiss(animated: true, completion: nil)
 		self.textField.text = ""
+		switchAlert.isOn = false
+		switchAlertRepeat.isOn = false
 	}
 }
 extension NewListVC: UIPickerViewDataSource {
