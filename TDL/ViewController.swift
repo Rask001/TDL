@@ -421,33 +421,47 @@ class ViewController: UIViewController {
 	}
 	
 	
+	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as! TableViewCell
 		let task = tasksModels[indexPath.row]
 		let button = cell.buttonCell
-		//let alarmImage = cell.alarmImageView
+	
 		cell.taskTitle.text = task.text
 		cell.taskTime.text = task.timeLabel
-		button.tag = indexPath.row
+    button.tag = indexPath.row
 		cell.alarmImageView.isHidden = task.alarmLabelBool
 		cell.repeatImageView.isHidden = task.repeatLabelBool
 		
 		if task.check == false {
 			button.backgroundColor = UIColor(named: "BGColor")
 			button.setImage(nil, for: .normal)
+			cell.taskTitle.textColor = .black
+			cell.taskTime.textColor = UIColor(white: 0.5, alpha: 1)
+			cell.repeatImageView.tintColor = UIColor(white: 0.5, alpha: 1)
+			cell.alarmImageView.tintColor = UIColor(white: 0.5, alpha: 1)
+			cell.taskTitle.attributedText = NSAttributedString(string: "\(cell.taskTitle.text!)", attributes: [NSAttributedString.Key.strikethroughStyle: nil ?? ""])
+			sendReminderNotification("Напоминание \(task.timeLabel!)", task.text, task.timeLabelDate!)
 		}else{
 			button.backgroundColor = UIColor.white
 			button.setImage(UIImage.init(systemName: "checkmark"), for: .normal)
+			button.tintColor = .lightGray
+			cell.taskTitle.textColor = .lightGray
+			cell.taskTime.textColor = .lightGray
+			cell.repeatImageView.tintColor = .lightGray
+			cell.alarmImageView.tintColor = .lightGray
+			cell.taskTitle.attributedText = NSAttributedString(string: "\(cell.taskTitle.text!)", attributes: [NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue])
+			UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["id_\(task.text)"])
 		}
 		button.addTarget(self, action: #selector(saveCheckmark(sender:)), for: .touchUpInside)
 		return cell
+		
 	}
 	
 	
 	
-
 	@objc func saveCheckmark(sender: UIButton) {
-		
+		tappedSoft()
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		let model = tasksModels[sender.tag]
