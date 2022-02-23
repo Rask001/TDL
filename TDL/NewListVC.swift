@@ -44,11 +44,6 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 	//MARK: - Setup
 	func pickerSetup() {
 		let dateNow = Date()
-//		let dateComponentsNow = dataPicker.calendar.dateComponents([.month, .day, .hour, .minute], from: dateNow)
-//		let dateFormatter = DateFormatter()
-//		dateFormatter.locale = Locale(identifier: "ru_RU")
-//		dateFormatter.dateFormat = "MMM d, HH:mm"
-//		let formatDate = dateFormatter.string(from: dateNow)
 		self.dataPicker.isEnabled = false
 		self.dataPicker.minimumDate = dateNow
 		self.dataPicker.timeZone = .autoupdatingCurrent
@@ -77,8 +72,8 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 	func switchAlertSetup(){
 		//switchAlert.frame = CGRect(x: 30, y: 210, width: 0, height: 0)
 		switchAlert.isOn = false
-		switchAlert.addTarget(self, action: #selector(reminder), for: .valueChanged)
 		switchAlert.translatesAutoresizingMaskIntoConstraints = false
+		switchAlert.addTarget(self, action: #selector(reminder), for: .valueChanged)
 		self.view.addSubview(switchAlert)
 	}
 	
@@ -104,13 +99,22 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 		}
 		exemp.alarmImageView.isHidden = alarmLabelBoolGlobal
 	}
-	
+
 	
 	
 	
 	@objc func repeatReminder(){
+		//guard switchAlert.isOn == true else { return }
+		if switchAlertRepeat.isOn == true {
+			print ("Repeat on")
+			repeatLabelBoolGlobal = false
+		}else{
+			print ("Repeat off")
+			repeatLabelBoolGlobal = true
+		}
 		print("тут будут повторы")
 	}
+	
 	//textFieldSetup
 	func textFieldSetup() {
 		self.textField.delegate = self
@@ -148,27 +152,32 @@ class NewListVC: UIViewController, UITextFieldDelegate{
 	//otherSetup
 	func otherSetup(){
 		self.view.backgroundColor = .secondarySystemBackground
+		alarmLabelBoolGlobal = true
+		repeatLabelBoolGlobal = true
 	}
 	
 	
 //MARK: - Func
 	@objc func continueFunc(){
 		guard let text = textField.text, !text.isEmpty else { return }
+		if switchAlert.isOn == true {
+			guard dateFromDatePicker != "" else { return }
+		}
 		textTaskFromTF = text
-    //let time = dateFromDatePicker
-		//let exemp = TableViewCell()
-     //dateFromDatePicker = time
-		
 		NotificationCenter.default.post(name: Notification.Name("Task"), object: .none)
 		cancelFunc()
 	}
-	
+
 	
 	@objc func cancelFunc(){
-		dismiss(animated: true, completion: nil)
-		self.textField.text = ""
+		self.textField.text = nil
+		self.dataPicker.isEnabled = false
 		switchAlert.isOn = false
 		switchAlertRepeat.isOn = false
+		dateFromDatePicker = ""
+		alarmLabelBoolGlobal = true
+		repeatLabelBoolGlobal = true
+		dismiss(animated: true, completion: nil)
 	}
 }
 extension NewListVC: UIPickerViewDataSource {

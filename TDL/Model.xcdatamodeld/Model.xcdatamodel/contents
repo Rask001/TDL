@@ -8,6 +8,7 @@
         <attribute name="alarmLabelBool" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="check" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="repeatLabelBool" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="text" attributeType="String"/>
         <attribute name="timeLabel" optional="YES" attributeType="String"/>
         <attribute name="timeLabelDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -15,6 +16,6 @@
     </entity>
     <elements>
         <element name="Folder" positionX="-666.88134765625" positionY="77.219482421875" width="128" height="58"/>
-        <element name="Tasks" positionX="-454.2620849609375" positionY="-243.3578491210938" width="128" height="134"/>
+        <element name="Tasks" positionX="-454.2620849609375" positionY="-243.3578491210938" width="128" height="149"/>
     </elements>
 </model>

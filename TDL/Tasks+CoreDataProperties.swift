@@ -25,6 +25,6 @@ extension Tasks {
 	
 	  //@NSManaged public var timeLabelBool: Bool
 	  @NSManaged public var alarmLabelBool: Bool
-	  //@NSManaged public var repeatLabelBool: Bool
+	  @NSManaged public var repeatLabelBool: Bool
 	  //@NSManaged public var tag: String
 }
