@@ -6,12 +6,11 @@
 //
 
 import UIKit
-var dateDate = Date().addingTimeInterval(3)
 
 class TableViewCell: UITableViewCell {
 	static let identifier = "TableViewCell"
 	
-
+	
 	let backgroundViewCell: UIView = {
 		let view = UIView()
 		view.backgroundColor = .white
