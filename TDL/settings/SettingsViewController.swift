@@ -16,6 +16,8 @@ var backgroundColor = UIColor()
 	let blueSlider = UISlider()
 	let button = UIButton()
 	let label = UILabel()
+	var segmentedControl = UISegmentedControl()
+	
 	var red: CGFloat = 0
 	var green: CGFloat = 0
 	var blue: CGFloat = 0
@@ -28,16 +30,29 @@ var backgroundColor = UIColor()
 					blueSliderSetup()
 					setupButton()
 					setupLabel()
+					setupSegmented()
 	}
 			
+	
+	func setupSegmented() {
+		let items = ["background", "cells"]
+		segmentedControl = {
+			let segments = UISegmentedControl(items: items)
+			return segments
+		}()
+		segmentedControl.frame = CGRect(x: 50, y: 50, width: 275, height: 30)
+		self.view.addSubview(segmentedControl)
+	}
+	
+	
 	func setupLabel(){
-		label.frame = CGRect(x: 25, y: 280, width: 325, height: 200)
+		label.frame = CGRect(x: 25, y: 500, width: 325, height: 200)
 		label.numberOfLines = 3
 		self.view.addSubview(label)
 	}
 	
 	func redSliderSetup(){
-		self.redSlider.frame = CGRect(x: 17, y: 150, width: 341, height: 44)
+		self.redSlider.frame = CGRect(x: 17, y: 400, width: 341, height: 44)
 		self.redSlider.thumbTintColor = .red
 		self.redSlider.minimumTrackTintColor = .black
 		self.redSlider.minimumValue = 0
@@ -48,7 +63,7 @@ var backgroundColor = UIColor()
 		view.addSubview(redSlider)
 	}
 	func greenSliderSetup(){
-		self.greenSlider.frame = CGRect(x: 17, y: 200, width: 341, height: 44)
+		self.greenSlider.frame = CGRect(x: 17, y: 450, width: 341, height: 44)
 		self.greenSlider.thumbTintColor = .green
 		self.greenSlider.minimumTrackTintColor = .black
 		self.greenSlider.minimumValue = 0
@@ -59,7 +74,7 @@ var backgroundColor = UIColor()
 		view.addSubview(greenSlider)
 	}
 	func blueSliderSetup(){
-		self.blueSlider.frame = CGRect(x: 17, y: 250, width: 341, height: 44)
+		self.blueSlider.frame = CGRect(x: 17, y: 500, width: 341, height: 44)
 		self.blueSlider.thumbTintColor = .blue
 		self.blueSlider.minimumTrackTintColor = .black
 		self.blueSlider.minimumValue = 0
@@ -71,7 +86,7 @@ var backgroundColor = UIColor()
 	}
 	
 	func setupButton(){
-		button.frame = CGRect(x: self.view.bounds.width/2 - 60, y: 500, width: 120, height: 40)
+		button.frame = CGRect(x: self.view.bounds.width/2 - 60, y: 650, width: 120, height: 40)
 		button.addTarget(self, action: #selector(setColor), for: .touchUpInside)
 		button.backgroundColor = .black
 		button.setTitle("Set color", for: .normal)
