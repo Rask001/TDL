@@ -12,6 +12,7 @@ import FSCalendar
 var menuOpen = false
 var checkmark = false
 var alarmLabelBoolGlobal = false
+var repeatLabelBoolGlobal = false
 var textTaskFromTF = ""
 var dateFromDatePicker = ""
 var newDate = Date()
@@ -92,13 +93,14 @@ class ViewController: UIViewController {
 									withTime: dateFromDatePicker,
 									withDate: newDate,
 									withCheck: checkmark,
-									withAlarmLabelBuul: alarmLabelBoolGlobal)
+									withAlarmLabelBuul: alarmLabelBoolGlobal,
+									withRepeatLabelBool: repeatLabelBoolGlobal)
 	
 		tableView.reloadData()
 	}
 	
 	
-	func saveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool, withAlarmLabelBuul status: Bool) {
+	func saveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool, withAlarmLabelBuul alarm: Bool, withRepeatLabelBool repeatt: Bool) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
 		let context = appDelegate.persistentContainer.viewContext
 		guard let entity = NSEntityDescription.entity(forEntityName: "Tasks", in: context) else {return}
@@ -108,7 +110,9 @@ class ViewController: UIViewController {
 		model.timeLabel = time
 		model.timeLabelDate = newDate
 		model.check = false
-	  model.alarmLabelBool = status
+	  model.alarmLabelBool = alarm
+		model.repeatLabelBool = repeatt
+		
 		do{
 			try context.save()
 			tasksModels.append(model)
@@ -145,6 +149,7 @@ class ViewController: UIViewController {
 		model.timeLabelDate = date
 		model.check = false
 		model.alarmLabelBool = alarmLabelBoolGlobal
+		model.repeatLabelBool = repeatLabelBoolGlobal
 
 		do {
 			try context.save()
@@ -425,6 +430,7 @@ class ViewController: UIViewController {
 		cell.taskTime.text = task.timeLabel
 		button.tag = indexPath.row
 		cell.alarmImageView.isHidden = task.alarmLabelBool
+		cell.repeatImageView.isHidden = task.repeatLabelBool
 		
 		if task.check == false {
 			button.backgroundColor = UIColor(named: "BGColor")

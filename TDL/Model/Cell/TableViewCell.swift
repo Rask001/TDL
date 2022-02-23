@@ -63,7 +63,7 @@ class TableViewCell: UITableViewCell {
 		return imageView
 	}()
 	//318 38
-	private let repeatImageView: UIImageView = {
+	let repeatImageView: UIImageView = {
 		let imageView = UIImageView()
 		imageView.image = UIImage(systemName: "repeat")
 		imageView.frame = CGRect(x: 265, y: 5, width: 13, height: 13)
