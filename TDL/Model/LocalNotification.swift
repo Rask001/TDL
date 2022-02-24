@@ -10,6 +10,7 @@ import UserNotifications
 
 
 func sendReminderNotification(_ title: String, _ body: String, _ date: Date){
+	guard switchAlert.isOn == true else { return }
 	let content = UNMutableNotificationContent()
 	content.title = body
 	content.sound = .default

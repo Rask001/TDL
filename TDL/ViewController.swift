@@ -426,7 +426,8 @@ class ViewController: UIViewController {
 		let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCell.identifier, for: indexPath) as! TableViewCell
 		let task = tasksModels[indexPath.row]
 		let button = cell.buttonCell
-	
+		let timeLabelDate = task.timeLabelDate
+		
 		cell.taskTitle.text = task.text
 		cell.taskTime.text = task.timeLabel
     button.tag = indexPath.row
@@ -436,11 +437,19 @@ class ViewController: UIViewController {
 		if task.check == false {
 			button.backgroundColor = UIColor(named: "BGColor")
 			button.setImage(nil, for: .normal)
+			if timeLabelDate ?? Date() < Date() {
+				cell.repeatImageView.tintColor = .red
+				cell.alarmImageView.tintColor = .red
+				cell.taskTime.textColor = .red
+				cell.taskTitle.textColor = .red
+				cell.taskTitle.attributedText = NSAttributedString(string: "\(cell.taskTitle.text!)", attributes: [NSAttributedString.Key.strikethroughStyle: nil ?? ""])
+			}else{
 			cell.taskTitle.textColor = .black
 			cell.taskTime.textColor = UIColor(white: 0.5, alpha: 1)
 			cell.repeatImageView.tintColor = UIColor(white: 0.5, alpha: 1)
 			cell.alarmImageView.tintColor = UIColor(white: 0.5, alpha: 1)
 			cell.taskTitle.attributedText = NSAttributedString(string: "\(cell.taskTitle.text!)", attributes: [NSAttributedString.Key.strikethroughStyle: nil ?? ""])
+			}
 			sendReminderNotification("Напоминание \(task.timeLabel!)", task.text, task.timeLabelDate!)
 		}else{
 			button.backgroundColor = UIColor.white
