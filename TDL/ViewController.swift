@@ -43,7 +43,7 @@ class ViewController: UIViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-		let fetchRequest: NSFetchRequest<Tasks> = Tasks.fetchRequest() //используем классовый метод
+		let fetchRequest: NSFetchRequest<Tasks> = Tasks.fetchRequest()
 		do{
 			tasksModels = try context.fetch(fetchRequest)
 		} catch let error as NSError {
@@ -137,7 +137,6 @@ class ViewController: UIViewController {
 	@objc func editTask(notificationEdit: NSNotification){
 		self.editAndSaveTask(withTitle: newCellName, withTime: dateFromDatePicker, withDate: newDate, withCheck: checkmark)
 		tableView.reloadData()
-		print("проверка")
 	}
 	func editAndSaveTask(withTitle title: String, withTime time: String, withDate date: Date, withCheck check: Bool) {
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
@@ -437,12 +436,22 @@ class ViewController: UIViewController {
 		if task.check == false {
 			button.backgroundColor = UIColor(named: "BGColor")
 			button.setImage(nil, for: .normal)
-			if timeLabelDate ?? Date() < Date() {
+			if timeLabelDate! < Date() {
+				if task.timeLabel != "" {
 				cell.repeatImageView.tintColor = .red
 				cell.alarmImageView.tintColor = .red
 				cell.taskTime.textColor = .red
 				cell.taskTitle.textColor = .red
-				cell.taskTitle.attributedText = NSAttributedString(string: "\(cell.taskTitle.text!)", attributes: [NSAttributedString.Key.strikethroughStyle: nil ?? ""])
+					cell.taskTitle.attributedText = NSAttributedString(string: "\(cell.taskTitle.text!)", attributes: [NSAttributedString.Key.strikethroughStyle: nil ?? ""])
+				}else{
+					cell.repeatImageView.tintColor = .black
+					cell.alarmImageView.tintColor = .black
+					cell.taskTime.textColor = .black
+					cell.taskTitle.textColor = .black
+					cell.taskTitle.attributedText = NSAttributedString(string: "\(cell.taskTitle.text!)", attributes: [NSAttributedString.Key.strikethroughStyle: nil ?? ""])
+				}
+				
+	
 			}else{
 			cell.taskTitle.textColor = .black
 			cell.taskTime.textColor = UIColor(white: 0.5, alpha: 1)
