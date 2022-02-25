@@ -244,12 +244,12 @@ class ViewController: UIViewController {
 	//MARK: - SETUP
 	
 	func setupButton(){
-		self.buttonNewTask.frame = CGRect(x: self.view.bounds.width/2 - 50, y: 670, width: 100, height: 50)
+		self.buttonNewTask.frame = CGRect(x: self.view.bounds.width/2 - 60, y: 670, width: 120, height: 50)
 		self.buttonNewTask.backgroundColor = UIColor(named: "BlackWhite")
-		self.buttonNewTask.titleLabel?.font = UIFont(name: "Avenir Next", size: 17)
+		self.buttonNewTask.titleLabel?.font = UIFont(name: "Futura", size: 17)
 		self.buttonNewTask.setTitle("New task", for: .normal)
-		self.buttonNewTask.setTitleColor(UIColor.white, for: .normal)
-		self.buttonNewTask.layer.cornerRadius = 20
+		self.buttonNewTask.setTitleColor(UIColor(named: "BWTrue"), for: .normal)
+		self.buttonNewTask.layer.cornerRadius = 10
 		self.buttonNewTask.addTarget(self, action: #selector(goToNewList), for: .touchUpInside)
 		//self.buttonNewTask.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -50).isActive = true
 		tableView.addSubview(buttonNewTask)
@@ -258,14 +258,16 @@ class ViewController: UIViewController {
 	
 	//SideMenu
 	private func setupSideMenu(){
-		let menuWidth: CGFloat = 314
+		let menuWidth: CGFloat = 312
 		leftMenuNC = SideMenuNavigationController(rootViewController: LeftMenuVC())
 		SideMenuManager.default.leftMenuNavigationController = leftMenuNC
 		SideMenuManager.default.addScreenEdgePanGesturesToPresent(toView: self.view, forMenu: .left)
 		leftMenuNC?.presentationStyle = .viewSlideOutMenuIn // стиль открытия меню
-		leftMenuNC?.presentingViewControllerUserInteractionEnabled = true //представление ViewController Взаимодействие с пользователем включено
-		leftMenuNC?.enableSwipeToDismissGesture = false //можно ли свайпать меню
+		leftMenuNC?.presentingViewControllerUserInteractionEnabled = false //представление ViewController Взаимодействие с пользователем включено
+		leftMenuNC?.enableSwipeToDismissGesture = true //можно ли свайпать меню
+		
 		leftMenuNC?.enableTapToDismissGesture = true
+		//leftMenuNC?.blurEffectStyle = .extraLight
 		leftMenuNC?.menuWidth = menuWidth
 	}
 	

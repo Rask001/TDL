@@ -23,12 +23,12 @@ class SecondVC: UIViewController {
 	}
 	
 	func setupButton(){
-		button.frame = CGRect(x: self.view.bounds.width/2 - 60, y: 500, width: 120, height: 40)
+		button.frame = CGRect(x: self.view.bounds.width/2 - 60, y: 670, width: 120, height: 50)
 		button.addTarget(self, action: #selector(editFolders), for: .touchUpInside)
-		button.backgroundColor = .black
-		button.setTitle("setting", for: .normal)
-		button.setTitleColor(.white, for: .normal)
-		button.setTitleColor(.secondarySystemBackground, for: .selected)
+		button.backgroundColor = UIColor(named: "BlackWhite")
+		button.setTitle("Setting", for: .normal)
+		button.titleLabel?.font = UIFont(name: "Futura", size: 17)
+		button.setTitleColor(UIColor(named: "BWTrue"), for: .normal)
 		button.layer.cornerRadius = 10
 		self.view.addSubview(button)
 	}
