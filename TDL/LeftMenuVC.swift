@@ -143,11 +143,11 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
 	
 	func setupButton(){
-		self.buttonNewList.frame = CGRect(x: 82, y: 700, width: 150, height: 50)
-		self.buttonNewList.backgroundColor = UIColor(named: "BGColor")
+		self.buttonNewList.frame = CGRect(x: 82, y: 670, width: 150, height: 50)
+		self.buttonNewList.backgroundColor = UIColor(named: "BlackWhite")
 		self.buttonNewList.titleLabel?.font = UIFont(name: "Futura", size: 17)
 		self.buttonNewList.setTitle("Create new list", for: .normal)
-		self.buttonNewList.setTitleColor(UIColor (red: 50/255, green: 50/255, blue: 50/255, alpha: 1), for: .normal)
+		self.buttonNewList.setTitleColor(UIColor(named: "BWTrue"), for: .normal)
 		self.buttonNewList.layer.cornerRadius = 10
 		self.buttonNewList.addTarget(self, action: #selector(goToNewListViewController), for: .touchUpInside)
 		view.addSubview(self.buttonNewList)

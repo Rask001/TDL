@@ -10,7 +10,6 @@ var backgroundColorGlobal = UIColor.secondarySystemBackground
 class SettingsViewController: UIViewController {
 var backgroundColor = UIColor()
 	
-	
 	let redSlider = UISlider()
 	let greenSlider = UISlider()
 	let blueSlider = UISlider()
@@ -46,13 +45,15 @@ var backgroundColor = UIColor()
 	
 	
 	func setupLabel(){
-		label.frame = CGRect(x: 25, y: 500, width: 325, height: 200)
+		label.frame = CGRect(x: 280, y: 90, width: 80, height: 60)
+		label.font = UIFont(name: "Futura", size: 12)
 		label.numberOfLines = 3
+		//label.adjustsFontSizeToFitWidth = true
 		self.view.addSubview(label)
 	}
 	
 	func redSliderSetup(){
-		self.redSlider.frame = CGRect(x: 17, y: 400, width: 341, height: 44)
+		self.redSlider.frame = CGRect(x: 17, y: 450, width: 341, height: 44)
 		self.redSlider.thumbTintColor = .red
 		self.redSlider.minimumTrackTintColor = .black
 		self.redSlider.minimumValue = 0
@@ -63,7 +64,7 @@ var backgroundColor = UIColor()
 		view.addSubview(redSlider)
 	}
 	func greenSliderSetup(){
-		self.greenSlider.frame = CGRect(x: 17, y: 450, width: 341, height: 44)
+		self.greenSlider.frame = CGRect(x: 17, y: 500, width: 341, height: 44)
 		self.greenSlider.thumbTintColor = .green
 		self.greenSlider.minimumTrackTintColor = .black
 		self.greenSlider.minimumValue = 0
@@ -74,7 +75,7 @@ var backgroundColor = UIColor()
 		view.addSubview(greenSlider)
 	}
 	func blueSliderSetup(){
-		self.blueSlider.frame = CGRect(x: 17, y: 500, width: 341, height: 44)
+		self.blueSlider.frame = CGRect(x: 17, y: 550, width: 341, height: 44)
 		self.blueSlider.thumbTintColor = .blue
 		self.blueSlider.minimumTrackTintColor = .black
 		self.blueSlider.minimumValue = 0
@@ -88,11 +89,12 @@ var backgroundColor = UIColor()
 	func setupButton(){
 		button.frame = CGRect(x: self.view.bounds.width/2 - 60, y: 650, width: 120, height: 40)
 		button.addTarget(self, action: #selector(setColor), for: .touchUpInside)
-		button.backgroundColor = .black
+		button.backgroundColor = UIColor(named: "BlackWhite")
 		button.setTitle("Set color", for: .normal)
 		button.setTitleColor(.white, for: .normal)
-		button.setTitleColor(.secondarySystemBackground, for: .selected)
+		button.setTitleColor(UIColor(named: "BWTrue"), for: .normal)
 		button.layer.cornerRadius = 10
+		button.titleLabel?.font = UIFont(name: "Futura", size: 17)
 		self.view.addSubview(button)
 	}
 	
@@ -107,11 +109,11 @@ var backgroundColor = UIColor()
 		backgroundColor = UIColor (red: red, green: green, blue: blue, alpha: 1)
 		self.view.backgroundColor = backgroundColor
 		if redSlider.value < 50 {
-		label.textColor = .white
+		label.textColor = UIColor(white: 0.8, alpha: 0.5)
 		}else{
-		label.textColor = .black
+		label.textColor = UIColor(white: 0.5, alpha: 0.3)
 		}
-		label.text = "Red:     \(Int(redSlider.value))\nGreen:  \(Int(greenSlider.value))\nBlue:    \(Int(blueSlider.value))"
+		label.text = "Red:     \(Int(redSlider.value))\nGreen: \(Int(greenSlider.value))\nBlue:    \(Int(blueSlider.value))"
 		
 			}
 	}
