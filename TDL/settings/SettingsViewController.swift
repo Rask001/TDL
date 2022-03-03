@@ -16,7 +16,8 @@ var backgroundColor = UIColor()
 	let button = UIButton()
 	let label = UILabel()
 	var segmentedControl = UISegmentedControl()
-	
+	let cellView = UIView()
+	let cellView2 = UIView()
 	var red: CGFloat = 0
 	var green: CGFloat = 0
 	var blue: CGFloat = 0
@@ -30,8 +31,22 @@ var backgroundColor = UIColor()
 					setupButton()
 					setupLabel()
 					setupSegmented()
+					setupView()
 	}
-			
+	
+	
+	func setupView(){
+		cellView.frame = CGRect(x: 10, y: 100, width: self.view.bounds.width - 20, height: 60)
+		cellView.backgroundColor = .white
+		cellView.layer.cornerRadius = 10
+		self.view.addSubview(cellView)
+		
+		cellView2.frame = CGRect(x: 10, y: 162, width: self.view.bounds.width - 20, height: 60)
+		cellView2.backgroundColor = .white
+		cellView2.layer.cornerRadius = 10
+		self.view.addSubview(cellView2)
+	}
+	
 	
 	func setupSegmented() {
 		let items = ["background", "cells"]
@@ -41,6 +56,7 @@ var backgroundColor = UIColor()
 		}()
 		segmentedControl.frame = CGRect(x: 50, y: 50, width: 275, height: 30)
 		self.view.addSubview(segmentedControl)
+		segmentedControl.selectedSegmentIndex = 0
 	}
 	
 	
@@ -107,7 +123,12 @@ var backgroundColor = UIColor()
 		green = CGFloat (greenSlider.value)/255
 		blue = CGFloat (blueSlider.value)/255
 		backgroundColor = UIColor (red: red, green: green, blue: blue, alpha: 1)
+		if segmentedControl.selectedSegmentIndex == 0{
 		self.view.backgroundColor = backgroundColor
+		}else{
+			self.cellView.backgroundColor = backgroundColor
+			self.cellView2.backgroundColor = backgroundColor
+		}
 		if redSlider.value < 50 {
 		label.textColor = UIColor(white: 0.8, alpha: 0.5)
 		}else{
