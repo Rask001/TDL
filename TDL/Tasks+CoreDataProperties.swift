@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 import UIKit
-
+import UIKit.UIColor
 
 extension Tasks {
 
@@ -26,5 +26,6 @@ extension Tasks {
 	  //@NSManaged public var timeLabelBool: Bool
 	  @NSManaged public var alarmLabelBool: Bool
 	  @NSManaged public var repeatLabelBool: Bool
+	  @NSManaged public var backgroundColor: UIColor
 	  //@NSManaged public var tag: String
 }
