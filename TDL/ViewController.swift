@@ -21,6 +21,8 @@ var newCellName = ""
 var oldCellName = ""
 var switchAlert = UISwitch()
 var switchAlertRepeat = UISwitch()
+
+
 class ViewController: UIViewController {
 	
 	
@@ -165,145 +167,7 @@ class ViewController: UIViewController {
 		present(leftMenuNC!, animated: true) :
 		leftMenuNC!.dismiss(animated: true, completion: nil)
 	}
-	
-	func swipesObservers() {
-		let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipes))
-		swipeLeft.direction = .left
-		self.view.addGestureRecognizer(swipeLeft)
-	}
-	
-	func swipeCalendar() {
-		let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipesCalendar))
-		swipeUp.direction = .up
-		self.calendar.addGestureRecognizer(swipeUp)
 		
-		let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipesCalendar))
-		swipeDown.direction = .down
-		self.calendar.addGestureRecognizer(swipeDown)
-	}
-	
-	@objc func handleSwipesCalendar(gesture: UISwipeGestureRecognizer) {
-		switch gesture.direction {
-		case .up:
-			if calendar.scope == .month {
-				showHeightButtonTapped()
-			}
-		case .down:
-			if calendar.scope == .week{
-			showHeightButtonTapped()
-			}
-		default:
-			break
-		}
-	}
-	
-	
-	
-	@objc func tappedSoft() {
-		let generator = UIImpactFeedbackGenerator(style: .soft)
-		generator.impactOccurred()
-	}
-	
-	@objc func tappedRigid() {
-		let generator = UIImpactFeedbackGenerator(style: .rigid)
-		generator.impactOccurred()
-	}
-	
-	
-	
-	@objc func handleSwipes(gester: UISwipeGestureRecognizer){
-		switch gester.direction {
-		case .right:
-			break
-		case .left:
-			menuOpen == true ? didTapMenu() : nil
-		case .up:
-			break
-		case .down:
-			break
-		default:
-			break
-		}
-	}
-	
-	func calendarSetup(){
-		self.calendar.translatesAutoresizingMaskIntoConstraints = false
-		self.calendar.dataSource = self
-		self.calendar.delegate = self
-		self.calendar.scope = .week
-	}
-	
-	func showHeightButtonSetup() {
-		self.showHeightButton.addTarget(self, action: #selector(showHeightButtonTapped), for: .touchUpInside)
-		self.showHeightButton.setTitle("Open calendar", for: .normal)
-		self.showHeightButton.setTitleColor(UIColor.gray, for: .normal)
-		self.showHeightButton.titleLabel?.font = UIFont(name: "Avenir Next Demi Bold", size: 14)
-		self.showHeightButton.translatesAutoresizingMaskIntoConstraints = false
-	} 
-
-	//MARK: - SETUP
-	
-	func setupButton(){
-		self.buttonNewTask.frame = CGRect(x: self.view.bounds.width/2 - 60, y: 670, width: 120, height: 50)
-		self.buttonNewTask.backgroundColor = UIColor(named: "BlackWhite")
-		self.buttonNewTask.titleLabel?.font = UIFont(name: "Futura", size: 17)
-		self.buttonNewTask.setTitle("New task", for: .normal)
-		self.buttonNewTask.setTitleColor(UIColor(named: "BWTrue"), for: .normal)
-		self.buttonNewTask.layer.cornerRadius = 10
-		self.buttonNewTask.addTarget(self, action: #selector(goToNewList), for: .touchUpInside)
-		//self.buttonNewTask.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -50).isActive = true
-		tableView.addSubview(buttonNewTask)
-	}
-	
-	
-	//SideMenu
-	private func setupSideMenu(){
-		let menuWidth: CGFloat = 312
-		leftMenuNC = SideMenuNavigationController(rootViewController: LeftMenuVC())
-		SideMenuManager.default.leftMenuNavigationController = leftMenuNC
-		SideMenuManager.default.addScreenEdgePanGesturesToPresent(toView: self.view, forMenu: .left)
-		leftMenuNC?.presentationStyle = .viewSlideOutMenuIn // стиль открытия меню
-		leftMenuNC?.presentingViewControllerUserInteractionEnabled = false //представление ViewController Взаимодействие с пользователем включено
-		leftMenuNC?.enableSwipeToDismissGesture = true //можно ли свайпать меню
-		
-		leftMenuNC?.enableTapToDismissGesture = true
-		//leftMenuNC?.blurEffectStyle = .extraLight
-		leftMenuNC?.menuWidth = menuWidth
-	}
-	
-	//NavigationItems
-	private func setupNavigationItems(){
-		self.title = "Your tasks"
-		
-		self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.horizontal.3.decrease"),
-																														style: .plain,
-																														target: self,
-																														action: #selector(didTapMenu))
-		let rightButton = UIBarButtonItem(image: UIImage(systemName: "bell"),
-																			style: .plain,
-																			target: self,
-																			action: #selector(showHeightButtonTapped))
-		self.navigationItem.rightBarButtonItem = rightButton
-	}
-	
-	
-	
-
-	
-	
-	//setupOther
-	private func setupOther(){
-		self.view.backgroundColor = UIColor(named: "BGColor")
-		let tabBarItem = UITabBarItem(title: nil,
-																	image: UIImage(systemName: "checkmark.seal")?.withAlignmentRectInsets(.init(top: 10, left: 0, bottom: 0, right: 0)),
-																	tag: 0)
-		self.tabBarItem = tabBarItem
-		
-	
-		
-	}
-	
-	
 	@objc func showHeightButtonTapped(){
 		if calendar.scope == .week {
 			calendar.setScope(.month, animated: true)
@@ -534,48 +398,7 @@ class ViewController: UIViewController {
 	}
 }
 
-//MARK: - Set Constrains
-extension ViewController {
-	
-	func setConstraits() {
-		view.addSubview(calendar)
-		calendarHeightConstraint = NSLayoutConstraint(item: calendar, attribute: .height, relatedBy:  .equal, toItem: nil, attribute:  .notAnAttribute, multiplier: 1, constant: 300)
-		calendar.addConstraint(calendarHeightConstraint)
-		NSLayoutConstraint.activate([
-			calendar.topAnchor.constraint(equalTo: view.topAnchor, constant: 90),
-			calendar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
-			calendar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
-		])
-		view.addSubview(showHeightButton)
-		NSLayoutConstraint.activate([
-			showHeightButton.topAnchor.constraint(equalTo: calendar.bottomAnchor, constant: 0),
-			showHeightButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 15),
-			showHeightButton.widthAnchor.constraint(equalToConstant: 100),
-			showHeightButton.heightAnchor.constraint(equalToConstant: 20 )
-		])
-		view.addSubview(tableView)
-		NSLayoutConstraint.activate([
-			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -2),
-			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -5),
-			tableView.topAnchor.constraint(equalTo: showHeightButton.bottomAnchor, constant: 5),
-			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 5)
-		])
-		view.addSubview(buttonNewTask)
-		NSLayoutConstraint.activate([
-		])
-	}
-}
-//MARK: - EXTENTION
-extension ViewController: FSCalendarDataSource, FSCalendarDelegate, UITableViewDelegate, UITableViewDataSource {
-	func calendar(_ calendar: FSCalendar, boundingRectWillChange bounds: CGRect, animated: Bool) {
-		calendarHeightConstraint.constant = bounds.height
-		view.layoutIfNeeded()
-	}
-	
-	func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-		print(date)
-	}
-}
+
 
 //MARK: Commention Func
 

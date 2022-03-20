@@ -148,7 +148,7 @@ class LeftMenuVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
 		self.buttonNewList.titleLabel?.font = UIFont(name: "Futura", size: 17)
 		self.buttonNewList.setTitle("Create new list", for: .normal)
 		self.buttonNewList.setTitleColor(UIColor(named: "BWTrue"), for: .normal)
-		self.buttonNewList.layer.cornerRadius = 10
+		self.buttonNewList.layer.cornerRadius = 10 
 		self.buttonNewList.addTarget(self, action: #selector(goToNewListViewController), for: .touchUpInside)
 		view.addSubview(self.buttonNewList)
 	}
