@@ -24,6 +24,8 @@
 		3AD190B9279BF1D60041F3F6 /* LeftMenuVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD190B8279BF1D50041F3F6 /* LeftMenuVC.swift */; };
 		3AD190BB279D72650041F3F6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD190BA279D72650041F3F6 /* ViewController.swift */; };
 		3AD190C3279DF33A0041F3F6 /* NewListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD190C2279DF33A0041F3F6 /* NewListViewController.swift */; };
+		3AF2702A27E7C6C40009B7DA /* ViewControllerExtantion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF2702927E7C6C30009B7DA /* ViewControllerExtantion.swift */; };
+		3AF2702C27E7C8270009B7DA /* ViewControllerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF2702B27E7C8270009B7DA /* ViewControllerSetup.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +48,8 @@
 		3AD190BA279D72650041F3F6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		3AD190BE279DA4940041F3F6 /* SideMenu.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SideMenu.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AD190C2279DF33A0041F3F6 /* NewListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewListViewController.swift; sourceTree = "<group>"; };
+		3AF2702927E7C6C30009B7DA /* ViewControllerExtantion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerExtantion.swift; sourceTree = "<group>"; };
+		3AF2702B27E7C8270009B7DA /* ViewControllerSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerSetup.swift; sourceTree = "<group>"; };
 		3E9C1E86C4035AC962ACB06B /* Pods_TDL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TDL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		62309BDFF22A888A64536BDB /* Pods-TDL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TDL.release.xcconfig"; path = "Target Support Files/Pods-TDL/Pods-TDL.release.xcconfig"; sourceTree = "<group>"; };
 		66A33D8C1125F9217327E2C0 /* Pods-TDL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TDL.debug.xcconfig"; path = "Target Support Files/Pods-TDL/Pods-TDL.debug.xcconfig"; sourceTree = "<group>"; };
@@ -89,6 +93,8 @@
 				3A25478827AE7319009ECFEA /* Tasks */,
 				3A06F51927989687002F5C6D /* AppDelegate.swift */,
 				3AD190BA279D72650041F3F6 /* ViewController.swift */,
+				3AF2702927E7C6C30009B7DA /* ViewControllerExtantion.swift */,
+				3AF2702B27E7C8270009B7DA /* ViewControllerSetup.swift */,
 				3AD190B8279BF1D50041F3F6 /* LeftMenuVC.swift */,
 				3A7B9C3527A167AB0041284A /* SecondVC.swift */,
 				3A25478027AB365C009ECFEA /* NewListVC.swift */,
@@ -273,6 +279,8 @@
 				3AD190BB279D72650041F3F6 /* ViewController.swift in Sources */,
 				3A25478327AC5DDE009ECFEA /* newListEditing.swift in Sources */,
 				3A25478727AE7304009ECFEA /* Tasks+CoreDataProperties.swift in Sources */,
+				3AF2702C27E7C8270009B7DA /* ViewControllerSetup.swift in Sources */,
+				3AF2702A27E7C6C40009B7DA /* ViewControllerExtantion.swift in Sources */,
 				3AD190C3279DF33A0041F3F6 /* NewListViewController.swift in Sources */,
 				3A7B9C3427A15FEA0041284A /* Model.xcdatamodeld in Sources */,
 				3A25478127AB365C009ECFEA /* NewListVC.swift in Sources */,
